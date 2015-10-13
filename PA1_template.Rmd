@@ -1,25 +1,257 @@
 ---
-title: "Reproducible Research: Peer Assessment 1"
-output: 
+title: "Reproducible Research Peer Assessment 1"
+author: "DocOfi"
+date: "October 12, 2015"
+output:
   html_document:
-    keep_md: true
+    toc: yes
 ---
+```{r global_options, include=FALSE}
+knitr::opts_chunk$set(echo=TRUE, warning=FALSE, message=FALSE)
+```
 
+## Introduction
+This course focuses on the concepts and tools behind reporting modern data analyses in a reproducible manner. Reproducible research is the idea that data analyses, and more generally, scientific claims, are published with their data and software code so that others may verify the findings and build upon them. The need for reproducibility is increasing dramatically as data analyses become more complex, involving larger datasets and more sophisticated computations. Reproducibility allows for people to focus on the actual content of a data analysis, rather than on superficial details reported in a written summary Taken from the website of [Reproducible Research](https://www.coursera.org/course/repdata).
 
-## Loading and preprocessing the data
+This particular assignment, the first in this course, familiarizes the student with the use of R Markdown and the package Knitr for reporting data analysis.  It introduces the concept of imputation and how analysis is largely affected by presence and management of NAs or missing data.  It also hones the students skill in subsetting, working with dates, creating graphs and aggregating data using R programming.
 
+This assignment is submitted for the fulfillment of the requirements in Coursera's Reproducibe Research Peer Assessment 1. 
 
+```{r setwd}
+setwd("C:/Users/Ed/Desktop/UCI HAR Dataset")
+```
 
-## What is mean total number of steps taken per day?
+## Loading the data
 
+The data for this assignment can be downloaded from the course web site:
+    Dataset: [Activity monitoring data](https://d396qusza40orc.cloudfront.net/repdata%2Fdata%2Factivity.zip) [52K]
 
+The variables included in this dataset are:
+
+    steps: Number of steps taking in a 5-minute interval (missing values are coded as NA)
+
+    date: The date on which the measurement was taken in YYYY-MM-DD format
+
+    interval: Identifier for the 5-minute interval in which measurement was taken
+
+The dataset is stored in a comma-separated-value (CSV) file and there are a total of 17,568 observations in this dataset.
+```{r loading_data}
+if(!file.exists('activity.csv')){   
+  unzip('activity.zip')
+}   
+act <- read.csv("activity.csv", header = TRUE, stringsAsFactors = FALSE)
+str(act)
+summary(act)
+head(act) 
+```
+
+Examination of the summary of the data showed that observations were recorded on a 24 hour period for 61 days with 5 minute intervals.
+
+## Preprocessing the data
+
+We transformed the data from the variable column date and added column variables to represent the months (months), days of the week(weekday, represented by numbers e.g. 1 is Sunday, 2 is Monday...), and days of the year (yday) when the data was recorded.  Observation were recorder from the 274^th^ to the 334^th^ day of the year 2012 or from October 1, 2012 to November 30, 2012.  
+
+```{r, add_column}
+act$date <- as.Date(act$date)
+act$months <- month.name[as.POSIXlt(act$date)$mon + 1]
+act$weekday <- as.POSIXlt(act$date)$wday + 1
+act$yday <- as.POSIXlt(act$date)$yday
+head(act)
+```
+
+## What is the mean total number of steps taken per day?
+
+To answer the question, we first took the sum of the number of steps taken each day for the 61 days of the observation period.  
+
+```{r, grpby_yday}
+library(dplyr)
+by_yday <-group_by(act, yday)
+sum_byyday <- summarise(by_yday, sum(steps, na.rm = TRUE))
+colnames(sum_byyday) <- c("nth_day", "sum_steps")
+head(sum_byyday)
+```
+
+To obtain the mean, we summed the total number of steps taken each day for each of the days of the observation period (`r sum(sum_byyday$sum_steps, na.rm = TRUE)`) and divided it by the total number of days of the the observation period (`r length(sum_byyday$sum_steps)`).
+**NOTE** The days with 0 values in the sum_byyday data frame do not indicate 0 steps taken during these days but rather there was no observation recorded for these days or data was missing. We include these days in the analysis for now.
+
+```{r, mean_step}
+mean_steps_per_day <- mean(sum_byyday$sum_steps, na.rm = TRUE)
+print(mean_steps_per_day)
+```
+
+We obtained the median using the equation $Median = (n +1/2)^{th} term$
+
+```{r, median_step}
+median_steps_per_day <- median(sum_byyday$sum_steps, na.rm = TRUE)
+print(median_steps_per_day)
+```
+
+We present the results by creating a histogram to show the frequency distribution of the total number of steps per day. We added two vertical lines to show the median and the mean.
+
+```{r, hist, fig.width=5, fig.height=5}
+hist(sum_byyday$sum_steps, col = "green", breaks = 8, xlab = "Total number of steps/day", main = "Frequency \nof total number of steps/day", col.main = "navy", col.lab = "navy", cex = 1.5)
+rug(sum_byyday$sum_steps)
+abline(v = mean(sum_byyday$sum_steps, na.rm = TRUE), col = "blue", lwd = 2, lty = 3)
+abline(v = median(sum_byyday$sum_steps, na.rm = TRUE), col = "magenta", lwd = 2, lty = 2) 
+text(c(15,15), pos = 4, "Mean=9354.23", cex = 1, col = "blue")
+text(c(14,14), pos = 4, "Median=10395", cex = 1, col = "magenta")
+```
 
 ## What is the average daily activity pattern?
 
+To answer the question, we first grouped the number of steps taken, according to the five minute intervals of observation each day. We then made a time series plot (i.e. type = "l") of the 5-minute interval (x-axis) and the average number of steps taken, averaged across all days (y-axis).  To improve readability, we changed the column variable names to be more descriptive.
 
+```{r, grpby_int}
+by_interval <-group_by(act, interval)
+meanstep_byinterval <- summarise(by_interval, mean(steps, na.rm = TRUE))
+colnames(meanstep_byinterval) <- c("interval", "mean_steps")
+print(meanstep_byinterval)
+```
+
+Taking the mean of the total number of steps taken for each 5-minute interval throughout the day, we then determined what was the highest mean number of steps taken throughout the day. 
+
+```{r, maxsteps}
+maxsteps_byinterval <- max(meanstep_byinterval$mean_steps, na.rm = TRUE)
+print(maxsteps_byinterval)
+```
+We then determined at which time interval did the highest mean number of steps occurred.
+
+```{r, int_moststeps}
+interval_with_moststeps <- meanstep_byinterval[meanstep_byinterval$mean_steps == maxsteps_byinterval, ]
+print(interval_with_moststeps)                                
+```
+ 
+The highest mean number of steps occurred occurred at 8:35 am.
+ 
+```{r, time_act} 
+plot(meanstep_byinterval$mean_steps~meanstep_byinterval$interval, type = "l", xlab = "Time Interval (Min)", ylab = "Mean number of steps") 
+```
 
 ## Imputing missing values
 
+To Calculate and report the total number and percent of missing values in the dataset (i.e. the total number of rows with NAs), we use the following commands in R.
+
+```{r, sumNA}
+sum(is.na(act))
+mean(is.na(act))
+sum(is.na(act$date))
+sum(is.na(act$interval))
+sum(is.na(act$steps))
+mean(is.na(act$steps))
+mean(!is.na(act$steps))
+```
+
+We can see that the number of missing values or NAs  compared to the total number of values in the the whole data (`r round(mean(is.na(act))* 100, 2)`%) is few.  However, if we look at the percentage of NAs in the steps variable column, we find that a the number of NAs compared to the total number of observations in this column is high (`r round(mean(is.na(act$steps))* 100, 2)`%). The high percentage of missing data in this variable column can significantly affect the analysis of the data involving this variable.  We can further investigate the distribution of these missing values.
+
+```{r, time}
+missing_values <- is.na(act$steps)
+NA_days <- act[missing_values, ]
+NA_dates <- unique(NA_days$date)
+days_withNAs <- format(as.POSIXct(NA_dates), "%+")
+print(days_withNAs)
+```
+
+We can see that the missing values are isolated in certain dates.  In the following, we shall see that the NAs are not only located in certain days, but rather all throughout those particular days. 
+
+```{r, tap}
+wholeday_NAs <- with(act, tapply(steps, date, summary)) 
+print(wholeday_NAs)
+
+```
+
+We are now faced with a crossroad, whether to ignore these missing values or replace them with another value.  Since the assignment asks us to devise a strategy for filling in all of the missing values in the dataset, a process called imputation, we will now choose a systematic strategy to replace the missing values.  First, we make a copy of our original data frame to protect the data from being changed
+
+```{r, new_data}
+imp_act <- act
+head(imp_act)
+```
+
+There are several strategies to replace missing values using single or multiple mean values.  The simplest solution and probably the laziest solution i can find to  replace the missing value is to use the impute function from the package Hmisc.  The lmpute function replaces all the missing values or NAs with a single value, the mean of all the values found in the variable column steps (`r round(mean(act$steps, na.rm = TRUE))`)
+
+```{r, hmis}
+library(Hmisc)
+imp_act$steps <- round(impute(imp_act$steps, mean))
+sumNAS_imp_act <- sum(is.na(imp_act))
+head(imp_act)
+print(sumNAS_imp_act)
+```
+
+We can see now that there are `r sum(is.na(imp_act))` missing values in our new data frame with imputed values.
+
+```{r, sum_imp}
+impactby_yday <-group_by(imp_act, yday)
+impactsum_byyday <- summarise(impactby_yday, sum(steps, na.rm = TRUE))
+colnames(impactsum_byyday) <- c("nth_day", "sum_steps")
+head(impactsum_byyday)
+```
+
+We now make a histogram to show the the frequency distribution of the number of steps taken in the new data set with imputed values. But first, we will compute the mean and median for comparison with the previous data frame without imputed values. 
+
+```{r, mean_imp}
+mean_imp_stepsbyday <- mean(impactsum_byyday$sum_steps, na.rm = TRUE)
+print(mean_imp_stepsbyday)
+median_imp_stepsbyday <- median(impactsum_byyday$sum_steps, na.rm = TRUE)
+print(median_imp_stepsbyday)
+```
+
+We now make the histogram
+
+```{r, histimp, fig.width=5, fig.height=5}
+hist(impactsum_byyday$sum_steps, col = "green", breaks = 8, xlab = "Total number of steps/day", main = "Frequency \nof total number of steps/day", sub = "Days with missing values replaced", col.main = "navy", col.lab = "navy", col.sub = "red", cex = 1,5)
+rug(impactsum_byyday$sum_steps)
+abline(v = mean(impactsum_byyday$sum_steps, na.rm = TRUE), col = "blue", lwd = 2, lty = 3)
+abline(v = median(impactsum_byyday$sum_steps, na.rm = TRUE), col = "magenta", lwd = 2, lty = 2)
+text(c(15,15), pos = 4, "Mean=10751.74", cex = 1, col = "blue")
+text(c(14,14), pos = 4, "Median=10,656", cex = 1, col = "magenta")
+```
+
+Do these values differ from the estimates from the first part of the assignment? What is the impact of imputing missing data on the estimates of the total daily number of steps? Let's compare it with the original data.
+
+```{r, histcompare, fig.width=5, fig.height=5}
+hist(sum_byyday$sum_steps, col = "green", breaks = 8, xlab = "Total number of steps/day", main = "Frequency \nof total number of steps/day", sub = "Original data with missing values", col.main = "navy", col.lab = "navy", col.sub = "red", cex = 1.5)
+rug(sum_byyday$sum_steps)
+abline(v = mean(sum_byyday$sum_steps, na.rm = TRUE), col = "blue", lwd = 2, lty = 3)
+abline(v = median(sum_byyday$sum_steps, na.rm = TRUE), col = "magenta", lwd = 2, lty = 2) 
+text(c(15,15), pos = 4, "Mean=9354.23", cex = 1, col = "blue")
+text(c(14,14), pos = 4, "Median=10395", cex = 1, col = "magenta")
+```
+
+Comparing the histograms of the data with NAs and the one with imputed values we can see that the mean and median of the data set with imputed values are closer together, indicating that the distribution of values in the steps variable have narrowed or grown closer together.  Results appear to have homogenized. Although, range, the maximum and the minimum value, are not affected.
 
 
 ## Are there differences in activity patterns between weekdays and weekends?
+
+To answer the question, we make a new factor variable in the dataset with two levels - "weekday" and "weekend" indicating whether a given date is a weekday or weekend day. We then extract the mean of the variable steps grouped according to interval and weektype.
+
+```{r, wkends}
+imp_act <- mutate(imp_act, weektype = ifelse(imp_act$weekday == 1 | imp_act$weekday == 7, "weekend", "weekday"))
+imp_byintwkt <-group_by(imp_act, interval, weektype)
+sumimp_byintwkt <-summarise(imp_byintwkt, mean(steps))
+colnames(sumimp_byintwkt)[3] <-c("mean_steps")
+head(sumimp_byintwkt)
+```
+
+To visually compare the activity level during weekdays (Monday-Friday) and weekends (Saturday and Sunday), we make a panel plot containing a time series plot (i.e. type = "l") of the 5-minute interval (x-axis) and the average number of steps taken, averaged across all weekday days or weekend days (y-axis). 
+```{r, timeser2}
+library(ggplot2)
+g <- ggplot(sumimp_byintwkt, aes(x = interval, y = mean_steps, color = weektype)) + geom_line() + facet_wrap(~weektype, ncol = 1, nrow = 2) + ggtitle("Comparing The Mean Number of Steps\nduring Weekends and Weekdays") + xlab("Time Interval (Minutes)") + ylab("Mean Number of Steps")
+print(g)
+```
+
+*We can see from the above that activity or the number of steps  increases abruptly and earlier during weekdays, plateaus, and then abruptly increase again, reaching peak levels around 9 am. 
+
+*Activity or the number of steps during weekends begins gradually and have several small peaks throughout the day but never reaching the highest level seen during weekdays.  
+
+*Peak activity level in the afternoon are several during weekdays and weekends.  However, peak levels during weekdays are smaller compared to the peak activity levels in the afternoon on weekends.
+
+*Activity during weekdays tend to taper earlier (around 6 pm) during weekdays, compared to weekends, where activity levels begin to taper around 8 pm.
+
+There were more time intervals where peak levels were reached during weekdays compared to weekends, 
+
+## Session Information
+
+```{r eval=TRUE}
+
+sessionInfo()
+
+```
