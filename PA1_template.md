@@ -1,7 +1,7 @@
 ---
 title: "Reproducible Research Peer Assessment 1"
 author: "DocOfi"
-date: "October 12, 2015"
+date: "October 16, 2015"
 output:
   html_document:
     toc: yes
@@ -236,6 +236,8 @@ plot(meanstep_byinterval$mean_steps~meanstep_byinterval$interval, type = "l", xl
 
 To Calculate and report the total number and percent of missing values in the dataset (i.e. the total number of rows with NAs), we use the following commands in R.
 
+### Proportion of missing values in the data
+
 
 ```r
 sum(is.na(act))
@@ -316,7 +318,7 @@ We can see that the missing values are isolated in certain dates.  In the follow
 
 ```r
 wholeday_NAs <- with(act, tapply(steps, date, summary)) 
-print(wholeday_NAs)
+print(wholeday_NAs[c(1, 8, 32, 35, 40, 41, 45, 61)])
 ```
 
 ```
@@ -324,157 +326,17 @@ print(wholeday_NAs)
 ##    Min. 1st Qu.  Median    Mean 3rd Qu.    Max.    NA's 
 ##      NA      NA      NA     NaN      NA      NA     288 
 ## 
-## $`2012-10-02`
-##     Min.  1st Qu.   Median     Mean  3rd Qu.     Max. 
-##   0.0000   0.0000   0.0000   0.4375   0.0000 117.0000 
-## 
-## $`2012-10-03`
-##    Min. 1st Qu.  Median    Mean 3rd Qu.    Max. 
-##    0.00    0.00    0.00   39.42   15.00  613.00 
-## 
-## $`2012-10-04`
-##    Min. 1st Qu.  Median    Mean 3rd Qu.    Max. 
-##    0.00    0.00    0.00   42.07   30.25  547.00 
-## 
-## $`2012-10-05`
-##    Min. 1st Qu.  Median    Mean 3rd Qu.    Max. 
-##    0.00    0.00    0.00   46.16   15.25  555.00 
-## 
-## $`2012-10-06`
-##    Min. 1st Qu.  Median    Mean 3rd Qu.    Max. 
-##    0.00    0.00    0.00   53.54   35.25  526.00 
-## 
-## $`2012-10-07`
-##    Min. 1st Qu.  Median    Mean 3rd Qu.    Max. 
-##    0.00    0.00    0.00   38.25   34.00  523.00 
-## 
 ## $`2012-10-08`
 ##    Min. 1st Qu.  Median    Mean 3rd Qu.    Max.    NA's 
 ##      NA      NA      NA     NaN      NA      NA     288 
-## 
-## $`2012-10-09`
-##    Min. 1st Qu.  Median    Mean 3rd Qu.    Max. 
-##    0.00    0.00    0.00   44.48   20.00  748.00 
-## 
-## $`2012-10-10`
-##    Min. 1st Qu.  Median    Mean 3rd Qu.    Max. 
-##    0.00    0.00    0.00   34.38   32.25  413.00 
-## 
-## $`2012-10-11`
-##    Min. 1st Qu.  Median    Mean 3rd Qu.    Max. 
-##    0.00    0.00    0.00   35.78    7.25  748.00 
-## 
-## $`2012-10-12`
-##    Min. 1st Qu.  Median    Mean 3rd Qu.    Max. 
-##    0.00    0.00    0.00   60.35   32.00  802.00 
-## 
-## $`2012-10-13`
-##    Min. 1st Qu.  Median    Mean 3rd Qu.    Max. 
-##    0.00    0.00    0.00   43.15   24.25  542.00 
-## 
-## $`2012-10-14`
-##    Min. 1st Qu.  Median    Mean 3rd Qu.    Max. 
-##    0.00    0.00    0.00   52.42   22.25  540.00 
-## 
-## $`2012-10-15`
-##    Min. 1st Qu.  Median    Mean 3rd Qu.    Max. 
-##     0.0     0.0     0.0    35.2     7.0   786.0 
-## 
-## $`2012-10-16`
-##    Min. 1st Qu.  Median    Mean 3rd Qu.    Max. 
-##    0.00    0.00    0.00   52.38   26.00  758.00 
-## 
-## $`2012-10-17`
-##    Min. 1st Qu.  Median    Mean 3rd Qu.    Max. 
-##    0.00    0.00    0.00   46.71   11.25  744.00 
-## 
-## $`2012-10-18`
-##    Min. 1st Qu.  Median    Mean 3rd Qu.    Max. 
-##    0.00    0.00    0.00   34.92    0.00  759.00 
-## 
-## $`2012-10-19`
-##    Min. 1st Qu.  Median    Mean 3rd Qu.    Max. 
-##    0.00    0.00    0.00   41.07   20.25  512.00 
-## 
-## $`2012-10-20`
-##    Min. 1st Qu.  Median    Mean 3rd Qu.    Max. 
-##    0.00    0.00    0.00   36.09   13.00  532.00 
-## 
-## $`2012-10-21`
-##    Min. 1st Qu.  Median    Mean 3rd Qu.    Max. 
-##    0.00    0.00    0.00   30.63   17.25  501.00 
-## 
-## $`2012-10-22`
-##    Min. 1st Qu.  Median    Mean 3rd Qu.    Max. 
-##    0.00    0.00    0.00   46.74   18.25  783.00 
-## 
-## $`2012-10-23`
-##    Min. 1st Qu.  Median    Mean 3rd Qu.    Max. 
-##    0.00    0.00    0.00   30.97   12.25  499.00 
-## 
-## $`2012-10-24`
-##    Min. 1st Qu.  Median    Mean 3rd Qu.    Max. 
-##    0.00    0.00    0.00   29.01   14.25  533.00 
-## 
-## $`2012-10-25`
-##    Min. 1st Qu.  Median    Mean 3rd Qu.    Max. 
-##   0.000   0.000   0.000   8.653   0.000 443.000 
-## 
-## $`2012-10-26`
-##    Min. 1st Qu.  Median    Mean 3rd Qu.    Max. 
-##    0.00    0.00    0.00   23.53   15.00  440.00 
-## 
-## $`2012-10-27`
-##    Min. 1st Qu.  Median    Mean 3rd Qu.    Max. 
-##    0.00    0.00    0.00   35.14    6.00  555.00 
-## 
-## $`2012-10-28`
-##    Min. 1st Qu.  Median    Mean 3rd Qu.    Max. 
-##    0.00    0.00    0.00   39.78   38.25  533.00 
-## 
-## $`2012-10-29`
-##    Min. 1st Qu.  Median    Mean 3rd Qu.    Max. 
-##    0.00    0.00    0.00   17.42    0.00  591.00 
-## 
-## $`2012-10-30`
-##    Min. 1st Qu.  Median    Mean 3rd Qu.    Max. 
-##    0.00    0.00    0.00   34.09   22.00  523.00 
-## 
-## $`2012-10-31`
-##    Min. 1st Qu.  Median    Mean 3rd Qu.    Max. 
-##    0.00    0.00    0.00   53.52   22.25  757.00 
 ## 
 ## $`2012-11-01`
 ##    Min. 1st Qu.  Median    Mean 3rd Qu.    Max.    NA's 
 ##      NA      NA      NA     NaN      NA      NA     288 
 ## 
-## $`2012-11-02`
-##    Min. 1st Qu.  Median    Mean 3rd Qu.    Max. 
-##    0.00    0.00    0.00   36.81    8.25  753.00 
-## 
-## $`2012-11-03`
-##    Min. 1st Qu.  Median    Mean 3rd Qu.    Max. 
-##     0.0     0.0     0.0    36.7    25.5   533.0 
-## 
 ## $`2012-11-04`
 ##    Min. 1st Qu.  Median    Mean 3rd Qu.    Max.    NA's 
 ##      NA      NA      NA     NaN      NA      NA     288 
-## 
-## $`2012-11-05`
-##    Min. 1st Qu.  Median    Mean 3rd Qu.    Max. 
-##    0.00    0.00    0.00   36.25    7.00  785.00 
-## 
-## $`2012-11-06`
-##    Min. 1st Qu.  Median    Mean 3rd Qu.    Max. 
-##    0.00    0.00    0.00   28.94   11.25  630.00 
-## 
-## $`2012-11-07`
-##    Min. 1st Qu.  Median    Mean 3rd Qu.    Max. 
-##    0.00    0.00    0.00   44.73   20.50  766.00 
-## 
-## $`2012-11-08`
-##    Min. 1st Qu.  Median    Mean 3rd Qu.    Max. 
-##    0.00    0.00    0.00   11.18    0.00  359.00 
 ## 
 ## $`2012-11-09`
 ##    Min. 1st Qu.  Median    Mean 3rd Qu.    Max.    NA's 
@@ -484,88 +346,92 @@ print(wholeday_NAs)
 ##    Min. 1st Qu.  Median    Mean 3rd Qu.    Max.    NA's 
 ##      NA      NA      NA     NaN      NA      NA     288 
 ## 
-## $`2012-11-11`
-##    Min. 1st Qu.  Median    Mean 3rd Qu.    Max. 
-##    0.00    0.00    0.00   43.78   26.00  540.00 
-## 
-## $`2012-11-12`
-##    Min. 1st Qu.  Median    Mean 3rd Qu.    Max. 
-##    0.00    0.00    0.00   37.38    0.00  542.00 
-## 
-## $`2012-11-13`
-##    Min. 1st Qu.  Median    Mean 3rd Qu.    Max. 
-##    0.00    0.00    0.00   25.47   13.50  444.00 
-## 
 ## $`2012-11-14`
 ##    Min. 1st Qu.  Median    Mean 3rd Qu.    Max.    NA's 
 ##      NA      NA      NA     NaN      NA      NA     288 
-## 
-## $`2012-11-15`
-##    Min. 1st Qu.  Median    Mean 3rd Qu.    Max. 
-##  0.0000  0.0000  0.0000  0.1424  0.0000 33.0000 
-## 
-## $`2012-11-16`
-##    Min. 1st Qu.  Median    Mean 3rd Qu.    Max. 
-##    0.00    0.00    0.00   18.89    0.00  475.00 
-## 
-## $`2012-11-17`
-##    Min. 1st Qu.  Median    Mean 3rd Qu.    Max. 
-##    0.00    0.00    0.00   49.79   10.25  753.00 
-## 
-## $`2012-11-18`
-##    Min. 1st Qu.  Median    Mean 3rd Qu.    Max. 
-##    0.00    0.00    0.00   52.47   29.25  785.00 
-## 
-## $`2012-11-19`
-##    Min. 1st Qu.  Median    Mean 3rd Qu.    Max. 
-##     0.0     0.0     0.0    30.7     6.0   789.0 
-## 
-## $`2012-11-20`
-##    Min. 1st Qu.  Median    Mean 3rd Qu.    Max. 
-##    0.00    0.00    0.00   15.53    0.00  500.00 
-## 
-## $`2012-11-21`
-##    Min. 1st Qu.  Median    Mean 3rd Qu.    Max. 
-##     0.0     0.0     0.0    44.4     0.0   758.0 
-## 
-## $`2012-11-22`
-##    Min. 1st Qu.  Median    Mean 3rd Qu.    Max. 
-##    0.00    0.00    0.00   70.93   42.25  567.00 
-## 
-## $`2012-11-23`
-##    Min. 1st Qu.  Median    Mean 3rd Qu.    Max. 
-##    0.00    0.00    0.00   73.59   21.25  760.00 
-## 
-## $`2012-11-24`
-##    Min. 1st Qu.  Median    Mean 3rd Qu.    Max. 
-##    0.00    0.00    0.00   50.27   16.25  785.00 
-## 
-## $`2012-11-25`
-##    Min. 1st Qu.  Median    Mean 3rd Qu.    Max. 
-##    0.00    0.00    0.00   41.09   20.50  551.00 
-## 
-## $`2012-11-26`
-##    Min. 1st Qu.  Median    Mean 3rd Qu.    Max. 
-##    0.00    0.00    0.00   38.76   18.25  709.00 
-## 
-## $`2012-11-27`
-##    Min. 1st Qu.  Median    Mean 3rd Qu.    Max. 
-##    0.00    0.00    0.00   47.38   17.50  806.00 
-## 
-## $`2012-11-28`
-##    Min. 1st Qu.  Median    Mean 3rd Qu.    Max. 
-##    0.00    0.00    0.00   35.36    0.00  733.00 
-## 
-## $`2012-11-29`
-##    Min. 1st Qu.  Median    Mean 3rd Qu.    Max. 
-##    0.00    0.00    0.00   24.47    0.00  568.00 
 ## 
 ## $`2012-11-30`
 ##    Min. 1st Qu.  Median    Mean 3rd Qu.    Max.    NA's 
 ##      NA      NA      NA     NaN      NA      NA     288
 ```
 
-We are now faced with a crossroad, whether to ignore these missing values or replace them with another value.  Since the assignment asks us to devise a strategy for filling in all of the missing values in the dataset, a process called imputation, we will now choose a systematic strategy to replace the missing values.  First, we make a copy of our original data frame to protect the data from being changed
+### Distribution of missing values in the data
+
+In the following we can see that there are more missing values in November than in October.  More Missing values are found in Mondays and Fridays (represented by 2 and 6) compared to the rest of the week and the NAs are uniformly distributed in the observation intervals throughout the day.
+
+
+```r
+NAdf <- act[is.na(act$steps), ]
+table(NAdf$months)
+```
+
+```
+## 
+## November  October 
+##     1728      576
+```
+
+```r
+table(NAdf$weekday)
+```
+
+```
+## 
+##   1   2   4   5   6   7 
+## 288 576 288 288 576 288
+```
+
+```r
+table(NAdf$interval)
+```
+
+```
+## 
+##    0    5   10   15   20   25   30   35   40   45   50   55  100  105  110 
+##    8    8    8    8    8    8    8    8    8    8    8    8    8    8    8 
+##  115  120  125  130  135  140  145  150  155  200  205  210  215  220  225 
+##    8    8    8    8    8    8    8    8    8    8    8    8    8    8    8 
+##  230  235  240  245  250  255  300  305  310  315  320  325  330  335  340 
+##    8    8    8    8    8    8    8    8    8    8    8    8    8    8    8 
+##  345  350  355  400  405  410  415  420  425  430  435  440  445  450  455 
+##    8    8    8    8    8    8    8    8    8    8    8    8    8    8    8 
+##  500  505  510  515  520  525  530  535  540  545  550  555  600  605  610 
+##    8    8    8    8    8    8    8    8    8    8    8    8    8    8    8 
+##  615  620  625  630  635  640  645  650  655  700  705  710  715  720  725 
+##    8    8    8    8    8    8    8    8    8    8    8    8    8    8    8 
+##  730  735  740  745  750  755  800  805  810  815  820  825  830  835  840 
+##    8    8    8    8    8    8    8    8    8    8    8    8    8    8    8 
+##  845  850  855  900  905  910  915  920  925  930  935  940  945  950  955 
+##    8    8    8    8    8    8    8    8    8    8    8    8    8    8    8 
+## 1000 1005 1010 1015 1020 1025 1030 1035 1040 1045 1050 1055 1100 1105 1110 
+##    8    8    8    8    8    8    8    8    8    8    8    8    8    8    8 
+## 1115 1120 1125 1130 1135 1140 1145 1150 1155 1200 1205 1210 1215 1220 1225 
+##    8    8    8    8    8    8    8    8    8    8    8    8    8    8    8 
+## 1230 1235 1240 1245 1250 1255 1300 1305 1310 1315 1320 1325 1330 1335 1340 
+##    8    8    8    8    8    8    8    8    8    8    8    8    8    8    8 
+## 1345 1350 1355 1400 1405 1410 1415 1420 1425 1430 1435 1440 1445 1450 1455 
+##    8    8    8    8    8    8    8    8    8    8    8    8    8    8    8 
+## 1500 1505 1510 1515 1520 1525 1530 1535 1540 1545 1550 1555 1600 1605 1610 
+##    8    8    8    8    8    8    8    8    8    8    8    8    8    8    8 
+## 1615 1620 1625 1630 1635 1640 1645 1650 1655 1700 1705 1710 1715 1720 1725 
+##    8    8    8    8    8    8    8    8    8    8    8    8    8    8    8 
+## 1730 1735 1740 1745 1750 1755 1800 1805 1810 1815 1820 1825 1830 1835 1840 
+##    8    8    8    8    8    8    8    8    8    8    8    8    8    8    8 
+## 1845 1850 1855 1900 1905 1910 1915 1920 1925 1930 1935 1940 1945 1950 1955 
+##    8    8    8    8    8    8    8    8    8    8    8    8    8    8    8 
+## 2000 2005 2010 2015 2020 2025 2030 2035 2040 2045 2050 2055 2100 2105 2110 
+##    8    8    8    8    8    8    8    8    8    8    8    8    8    8    8 
+## 2115 2120 2125 2130 2135 2140 2145 2150 2155 2200 2205 2210 2215 2220 2225 
+##    8    8    8    8    8    8    8    8    8    8    8    8    8    8    8 
+## 2230 2235 2240 2245 2250 2255 2300 2305 2310 2315 2320 2325 2330 2335 2340 
+##    8    8    8    8    8    8    8    8    8    8    8    8    8    8    8 
+## 2345 2350 2355 
+##    8    8    8
+```
+
+The next part of the assignment directs us to create a systematic strategy to replace the missing values, a process called imputation. There are several ways to implement imputation.
+
+First, we make a copy of our original data frame to protect the data from being changed
 
 
 ```r
@@ -583,7 +449,7 @@ head(imp_act)
 ## 6    NA 2012-10-01       25 October       2  274
 ```
 
-There are several strategies to replace missing values using single or multiple mean values.  The simplest solution and probably the laziest solution i can find to  replace the missing value is to use the impute function from the package Hmisc.  The lmpute function replaces all the missing values or NAs with a single value, the mean of all the values found in the variable column steps (37)
+There are several strategies to replace missing values using single or multiple mean values.  The simplest solution to  replace the missing value is to use the impute function from the package Hmisc.  The impute function replaces all the missing values or NAs with a single value, the mean of all the values found in the variable column steps (37). 
 
 
 ```r
@@ -658,7 +524,7 @@ We now make the histogram
 
 
 ```r
-hist(impactsum_byyday$sum_steps, col = "green", breaks = 8, xlab = "Total number of steps/day", main = "Frequency \nof total number of steps/day", sub = "Days with missing values replaced", col.main = "navy", col.lab = "navy", col.sub = "red", cex = 1,5)
+hist(impactsum_byyday$sum_steps, col = "green", breaks = 8, xlab = "Total number of steps/day", main = "Frequency \nof total number of steps/day", sub = "Days with missing values replaced by single mean", col.main = "navy", col.lab = "navy", col.sub = "red", cex = 1,5)
 rug(impactsum_byyday$sum_steps)
 abline(v = mean(impactsum_byyday$sum_steps, na.rm = TRUE), col = "blue", lwd = 2, lty = 3)
 abline(v = median(impactsum_byyday$sum_steps, na.rm = TRUE), col = "magenta", lwd = 2, lty = 2)
@@ -669,6 +535,127 @@ text(c(14,14), pos = 4, "Median=10,656", cex = 1, col = "magenta")
 ![plot of chunk histimp](figure/histimp-1.png) 
 
 Do these values differ from the estimates from the first part of the assignment? What is the impact of imputing missing data on the estimates of the total daily number of steps? Let's compare it with the original data.
+
+Comparing the histograms of the data with NAs and the one with imputed values we can see that the mean and median of the data set with imputed values are closer together, indicating that the distribution of values in the steps variable have narrowed or grown closer together.  Results appear to have homogenized. Although, range, the maximum and the minimum value, are not affected.
+
+A study  entitled ["Impact of missing data imputation methods on gene expression clustering and classification"](http://www.biomedcentral.com/1471-2105/16/64) performed a broad analysis of the impact of five well-known missing value imputation methods on three clustering and four classification methods in the context of 12 cancer gene expression datasets. 
+
+Their results suggest that the imputation methods evaluated have a minor impact on the classification and downstream clustering analyses and concluded that simple methods such as replacing the missing values by mean or the median values performed as well as more complex strategies..
+
+### An alternative way to impute using multiple mean values.
+
+Taking into account the distribution of NAS. From the above, we know that the NAs are equally ditributed over the different time intervals.
+
+Since the missing values are equally distributed in the time intervals, taking the mean number of steps grouped by intervals will provide a closer approximation of the value instead of using a single value to replace all missing values.
+
+
+```r
+by_interval <-group_by(act, interval)
+meanstep_byinterval <- summarise(by_interval, mean(steps, na.rm = TRUE))
+colnames(meanstep_byinterval) <- c("interval", "mean_steps")
+mean_act <- merge(act,meanstep_byinterval)
+```
+
+Let's take a look at a few rows of the new column variable mean_steps that contain the values that will replace the NAs in the steps column variable.
+
+
+```r
+mean_act <- arrange(mean_act, date)
+head(mean_act, 6)
+```
+
+```
+##   interval steps       date  months weekday yday mean_steps
+## 1        0    NA 2012-10-01 October       2  274  1.7169811
+## 2        5    NA 2012-10-01 October       2  274  0.3396226
+## 3       10    NA 2012-10-01 October       2  274  0.1320755
+## 4       15    NA 2012-10-01 October       2  274  0.1509434
+## 5       20    NA 2012-10-01 October       2  274  0.0754717
+## 6       25    NA 2012-10-01 October       2  274  2.0943396
+```
+
+Let's replace the NAs in the steps column variable
+
+
+```r
+mean_act$steps[is.na(mean_act$steps)] <- mean_act$mean_steps[is.na(mean_act$steps)]
+sum(is.na(mean_act))
+```
+
+```
+## [1] 0
+```
+
+```r
+head(mean_act, 10)
+```
+
+```
+##    interval     steps       date  months weekday yday mean_steps
+## 1         0 1.7169811 2012-10-01 October       2  274  1.7169811
+## 2         5 0.3396226 2012-10-01 October       2  274  0.3396226
+## 3        10 0.1320755 2012-10-01 October       2  274  0.1320755
+## 4        15 0.1509434 2012-10-01 October       2  274  0.1509434
+## 5        20 0.0754717 2012-10-01 October       2  274  0.0754717
+## 6        25 2.0943396 2012-10-01 October       2  274  2.0943396
+## 7        30 0.5283019 2012-10-01 October       2  274  0.5283019
+## 8        35 0.8679245 2012-10-01 October       2  274  0.8679245
+## 9        40 0.0000000 2012-10-01 October       2  274  0.0000000
+## 10       45 1.4716981 2012-10-01 October       2  274  1.4716981
+```
+
+```r
+tail(mean_act, 10)
+```
+
+```
+##       interval     steps       date   months weekday yday mean_steps
+## 17559     2310 0.0000000 2012-11-30 November       6  334  0.0000000
+## 17560     2315 0.8301887 2012-11-30 November       6  334  0.8301887
+## 17561     2320 0.9622642 2012-11-30 November       6  334  0.9622642
+## 17562     2325 1.5849057 2012-11-30 November       6  334  1.5849057
+## 17563     2330 2.6037736 2012-11-30 November       6  334  2.6037736
+## 17564     2335 4.6981132 2012-11-30 November       6  334  4.6981132
+## 17565     2340 3.3018868 2012-11-30 November       6  334  3.3018868
+## 17566     2345 0.6415094 2012-11-30 November       6  334  0.6415094
+## 17567     2350 0.2264151 2012-11-30 November       6  334  0.2264151
+## 17568     2355 1.0754717 2012-11-30 November       6  334  1.0754717
+```
+
+We now take the total number of steps each day, 
+
+
+```r
+multiimpactby_yday <-group_by(mean_act, yday)
+multiimpactsum_byyday <- summarise(multiimpactby_yday, sum(steps, na.rm = TRUE))
+colnames(multiimpactsum_byyday) <- c("nth_day", "sum_steps")
+head(multiimpactsum_byyday)
+```
+
+```
+## Source: local data frame [6 x 2]
+## 
+##   nth_day sum_steps
+## 1     274  10766.19
+## 2     275    126.00
+## 3     276  11352.00
+## 4     277  12116.00
+## 5     278  13294.00
+## 6     279  15420.00
+```
+We can now see the result of our imputation with multiple mean values.  Let's make a histogram for comparison with our original data and the one with missing values replaced by a single mean value. We added two vertical lines to show the median and the mean.
+
+
+```r
+hist(multiimpactsum_byyday$sum_steps, col = "green", breaks = 8, xlab = "Total number of steps/day", main = "Frequency \nof total number of steps/day", sub = "Days with missing values replaced with multiple means", col.main = "navy", col.lab = "navy", col.sub = "red", cex = 1,5)
+rug(multiimpactsum_byyday$sum_steps)
+abline(v = mean(multiimpactsum_byyday$sum_steps, na.rm = TRUE), col = "blue", lwd = 2, lty = 3)
+abline(v = median(multiimpactsum_byyday$sum_steps, na.rm = TRUE), col = "magenta", lwd = 2, lty = 2)
+text(c(15,15), pos = 4, "Mean=10766.19", cex = 1, col = "blue")
+text(c(14,14), pos = 4, "Median=10,766.19", cex = 1, col = "magenta")
+```
+
+![plot of chunk histoimp](figure/histoimp-1.png) 
 
 
 ```r
@@ -682,12 +669,23 @@ text(c(14,14), pos = 4, "Median=10395", cex = 1, col = "magenta")
 
 ![plot of chunk histcompare](figure/histcompare-1.png) 
 
-Comparing the histograms of the data with NAs and the one with imputed values we can see that the mean and median of the data set with imputed values are closer together, indicating that the distribution of values in the steps variable have narrowed or grown closer together.  Results appear to have homogenized. Although, range, the maximum and the minimum value, are not affected.
 
+```r
+hist(impactsum_byyday$sum_steps, col = "green", breaks = 8, xlab = "Total number of steps/day", main = "Frequency \nof total number of steps/day", sub = "Days with missing values replaced by single mean", col.main = "navy", col.lab = "navy", col.sub = "red", cex = 1,5)
+rug(impactsum_byyday$sum_steps)
+abline(v = mean(impactsum_byyday$sum_steps, na.rm = TRUE), col = "blue", lwd = 2, lty = 3)
+abline(v = median(impactsum_byyday$sum_steps, na.rm = TRUE), col = "magenta", lwd = 2, lty = 2)
+text(c(15,15), pos = 4, "Mean=10751.74", cex = 1, col = "blue")
+text(c(14,14), pos = 4, "Median=10,656", cex = 1, col = "magenta")
+```
+
+![plot of chunk histsingleM](figure/histsingleM-1.png) 
+
+Imputation by single mean value or multiple mean values resulted in the median approximating the mean value
 
 ## Are there differences in activity patterns between weekdays and weekends?
 
-To answer the question, we make a new factor variable in the dataset with two levels - "weekday" and "weekend" indicating whether a given date is a weekday or weekend day. We then extract the mean of the variable steps grouped according to interval and weektype.
+To answer the question, we make a new factor variable in the dataset with two levels - "weekday" and "weekend" indicating whether a given date is a weekday or weekend day. We then extract the mean of the variable steps grouped according to interval and weektype.  We will be using our data with the missing values replaced by a single mean value.
 
 
 ```r
@@ -720,6 +718,7 @@ print(g)
 ```
 
 ![plot of chunk timeser2](figure/timeser2-1.png) 
+
 
 *We can see from the above that activity or the number of steps  increases abruptly and earlier during weekdays, plateaus, and then abruptly increase again, reaching peak levels around 9 am. 
 
@@ -755,20 +754,20 @@ sessionInfo()
 ## [8] base     
 ## 
 ## other attached packages:
-## [1] Hmisc_3.16-0    Formula_1.2-1   survival_2.38-3 lattice_0.20-33
-## [5] knitr_1.11      dplyr_0.4.2     ggplot2_1.0.1  
+## [1] Hmisc_3.16-0    ggplot2_1.0.1   Formula_1.2-1   survival_2.38-3
+## [5] lattice_0.20-33 dplyr_0.4.2     knitr_1.11     
 ## 
 ## loaded via a namespace (and not attached):
-##  [1] RColorBrewer_1.1-2  markdown_0.7.7      digest_0.6.8       
-##  [4] htmltools_0.2.6     R6_2.1.0            splines_3.2.1      
-##  [7] scales_0.2.5        assertthat_0.1      stringr_1.0.0      
-## [10] munsell_0.4.2       proto_0.3-10        nnet_7.3-10        
-## [13] mime_0.3            acepack_1.3-3.3     DBI_0.3.1          
-## [16] labeling_0.3        MASS_7.3-43         plyr_1.8.3         
-## [19] stringi_0.5-5       magrittr_1.5        reshape2_1.4.1     
-## [22] rmarkdown_0.7       evaluate_0.7.2      gtable_0.1.2       
-## [25] colorspace_1.2-6    foreign_0.8-65      yaml_2.1.13        
-## [28] tools_3.2.1         parallel_3.2.1      cluster_2.0.3      
-## [31] gridExtra_2.0.0     lazyeval_0.1.10     formatR_1.2        
-## [34] rpart_4.1-10        Rcpp_0.12.0         latticeExtra_0.6-26
+##  [1] RColorBrewer_1.1-2  digest_0.6.8        htmltools_0.2.6    
+##  [4] R6_2.1.0            splines_3.2.1       scales_0.2.5       
+##  [7] assertthat_0.1      stringr_1.0.0       munsell_0.4.2      
+## [10] proto_0.3-10        nnet_7.3-10         acepack_1.3-3.3    
+## [13] DBI_0.3.1           labeling_0.3        MASS_7.3-43        
+## [16] plyr_1.8.3          stringi_0.5-5       magrittr_1.5       
+## [19] reshape2_1.4.1      rmarkdown_0.7       evaluate_0.7.2     
+## [22] gtable_0.1.2        colorspace_1.2-6    foreign_0.8-65     
+## [25] yaml_2.1.13         tools_3.2.1         parallel_3.2.1     
+## [28] cluster_2.0.3       gridExtra_2.0.0     lazyeval_0.1.10    
+## [31] formatR_1.2         rpart_4.1-10        Rcpp_0.12.0        
+## [34] latticeExtra_0.6-26
 ```

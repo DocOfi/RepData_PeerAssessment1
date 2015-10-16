@@ -1,7 +1,7 @@
 ---
 title: "Reproducible Research Peer Assessment 1"
 author: "DocOfi"
-date: "October 12, 2015"
+date: "October 16, 2015"
 output:
   html_document:
     toc: yes
@@ -131,6 +131,8 @@ plot(meanstep_byinterval$mean_steps~meanstep_byinterval$interval, type = "l", xl
 
 To Calculate and report the total number and percent of missing values in the dataset (i.e. the total number of rows with NAs), we use the following commands in R.
 
+### Proportion of missing values in the data
+
 ```{r, sumNA}
 sum(is.na(act))
 mean(is.na(act))
@@ -155,18 +157,31 @@ We can see that the missing values are isolated in certain dates.  In the follow
 
 ```{r, tap}
 wholeday_NAs <- with(act, tapply(steps, date, summary)) 
-print(wholeday_NAs)
+print(wholeday_NAs[c(1, 8, 32, 35, 40, 41, 45, 61)])
 
 ```
 
-We are now faced with a crossroad, whether to ignore these missing values or replace them with another value.  Since the assignment asks us to devise a strategy for filling in all of the missing values in the dataset, a process called imputation, we will now choose a systematic strategy to replace the missing values.  First, we make a copy of our original data frame to protect the data from being changed
+### Distribution of missing values in the data
+
+In the following we can see that there are more missing values in November than in October.  More Missing values are found in Mondays and Fridays (represented by 2 and 6) compared to the rest of the week and the NAs are uniformly distributed in the observation intervals throughout the day.
+
+```{r, Yiming}
+NAdf <- act[is.na(act$steps), ]
+table(NAdf$months)
+table(NAdf$weekday)
+table(NAdf$interval)
+```
+
+The next part of the assignment directs us to create a systematic strategy to replace the missing values, a process called imputation. There are several ways to implement imputation.
+
+First, we make a copy of our original data frame to protect the data from being changed
 
 ```{r, new_data}
 imp_act <- act
 head(imp_act)
 ```
 
-There are several strategies to replace missing values using single or multiple mean values.  The simplest solution and probably the laziest solution i can find to  replace the missing value is to use the impute function from the package Hmisc.  The lmpute function replaces all the missing values or NAs with a single value, the mean of all the values found in the variable column steps (`r round(mean(act$steps, na.rm = TRUE))`)
+There are several strategies to replace missing values using single or multiple mean values.  The simplest solution to  replace the missing value is to use the impute function from the package Hmisc.  The impute function replaces all the missing values or NAs with a single value, the mean of all the values found in the variable column steps (`r round(mean(act$steps, na.rm = TRUE))`). 
 
 ```{r, hmis}
 library(Hmisc)
@@ -197,7 +212,7 @@ print(median_imp_stepsbyday)
 We now make the histogram
 
 ```{r, histimp, fig.width=5, fig.height=5}
-hist(impactsum_byyday$sum_steps, col = "green", breaks = 8, xlab = "Total number of steps/day", main = "Frequency \nof total number of steps/day", sub = "Days with missing values replaced", col.main = "navy", col.lab = "navy", col.sub = "red", cex = 1,5)
+hist(impactsum_byyday$sum_steps, col = "green", breaks = 8, xlab = "Total number of steps/day", main = "Frequency \nof total number of steps/day", sub = "Days with missing values replaced by single mean", col.main = "navy", col.lab = "navy", col.sub = "red", cex = 1,5)
 rug(impactsum_byyday$sum_steps)
 abline(v = mean(impactsum_byyday$sum_steps, na.rm = TRUE), col = "blue", lwd = 2, lty = 3)
 abline(v = median(impactsum_byyday$sum_steps, na.rm = TRUE), col = "magenta", lwd = 2, lty = 2)
@@ -206,6 +221,60 @@ text(c(14,14), pos = 4, "Median=10,656", cex = 1, col = "magenta")
 ```
 
 Do these values differ from the estimates from the first part of the assignment? What is the impact of imputing missing data on the estimates of the total daily number of steps? Let's compare it with the original data.
+
+Comparing the histograms of the data with NAs and the one with imputed values we can see that the mean and median of the data set with imputed values are closer together, indicating that the distribution of values in the steps variable have narrowed or grown closer together.  Results appear to have homogenized. Although, range, the maximum and the minimum value, are not affected.
+
+A study  entitled ["Impact of missing data imputation methods on gene expression clustering and classification"](http://www.biomedcentral.com/1471-2105/16/64) performed a broad analysis of the impact of five well-known missing value imputation methods on three clustering and four classification methods in the context of 12 cancer gene expression datasets. 
+
+Their results suggest that the imputation methods evaluated have a minor impact on the classification and downstream clustering analyses and concluded that simple methods such as replacing the missing values by mean or the median values performed as well as more complex strategies..
+
+### An alternative way to impute using multiple mean values.
+
+Taking into account the distribution of NAS. From the above, we know that the NAs are equally ditributed over the different time intervals.
+
+Since the missing values are equally distributed in the time intervals, taking the mean number of steps grouped by intervals will provide a closer approximation of the value instead of using a single value to replace all missing values.
+
+```{r, goupbyt}
+by_interval <-group_by(act, interval)
+meanstep_byinterval <- summarise(by_interval, mean(steps, na.rm = TRUE))
+colnames(meanstep_byinterval) <- c("interval", "mean_steps")
+mean_act <- merge(act,meanstep_byinterval)
+```
+
+Let's take a look at a few rows of the new column variable mean_steps that contain the values that will replace the NAs in the steps column variable.
+
+```{r, meansteps}
+mean_act <- arrange(mean_act, date)
+head(mean_act, 6)
+```
+
+Let's replace the NAs in the steps column variable
+
+```{r, replaced}
+mean_act$steps[is.na(mean_act$steps)] <- mean_act$mean_steps[is.na(mean_act$steps)]
+sum(is.na(mean_act))
+head(mean_act, 10)
+tail(mean_act, 10)
+```
+
+We now take the total number of steps each day, 
+
+```{r, multiimp}
+multiimpactby_yday <-group_by(mean_act, yday)
+multiimpactsum_byyday <- summarise(multiimpactby_yday, sum(steps, na.rm = TRUE))
+colnames(multiimpactsum_byyday) <- c("nth_day", "sum_steps")
+head(multiimpactsum_byyday)
+```
+We can now see the result of our imputation with multiple mean values.  Let's make a histogram for comparison with our original data and the one with missing values replaced by a single mean value. We added two vertical lines to show the median and the mean.
+
+```{r, histoimp, fig.width=5, fig.height=5}
+hist(multiimpactsum_byyday$sum_steps, col = "green", breaks = 8, xlab = "Total number of steps/day", main = "Frequency \nof total number of steps/day", sub = "Days with missing values replaced with multiple means", col.main = "navy", col.lab = "navy", col.sub = "red", cex = 1,5)
+rug(multiimpactsum_byyday$sum_steps)
+abline(v = mean(multiimpactsum_byyday$sum_steps, na.rm = TRUE), col = "blue", lwd = 2, lty = 3)
+abline(v = median(multiimpactsum_byyday$sum_steps, na.rm = TRUE), col = "magenta", lwd = 2, lty = 2)
+text(c(15,15), pos = 4, "Mean=10766.19", cex = 1, col = "blue")
+text(c(14,14), pos = 4, "Median=10,766.19", cex = 1, col = "magenta")
+```
 
 ```{r, histcompare, fig.width=5, fig.height=5}
 hist(sum_byyday$sum_steps, col = "green", breaks = 8, xlab = "Total number of steps/day", main = "Frequency \nof total number of steps/day", sub = "Original data with missing values", col.main = "navy", col.lab = "navy", col.sub = "red", cex = 1.5)
@@ -216,12 +285,20 @@ text(c(15,15), pos = 4, "Mean=9354.23", cex = 1, col = "blue")
 text(c(14,14), pos = 4, "Median=10395", cex = 1, col = "magenta")
 ```
 
-Comparing the histograms of the data with NAs and the one with imputed values we can see that the mean and median of the data set with imputed values are closer together, indicating that the distribution of values in the steps variable have narrowed or grown closer together.  Results appear to have homogenized. Although, range, the maximum and the minimum value, are not affected.
+```{r, histsingleM, fig.width=5, fig.height=5}
+hist(impactsum_byyday$sum_steps, col = "green", breaks = 8, xlab = "Total number of steps/day", main = "Frequency \nof total number of steps/day", sub = "Days with missing values replaced by single mean", col.main = "navy", col.lab = "navy", col.sub = "red", cex = 1,5)
+rug(impactsum_byyday$sum_steps)
+abline(v = mean(impactsum_byyday$sum_steps, na.rm = TRUE), col = "blue", lwd = 2, lty = 3)
+abline(v = median(impactsum_byyday$sum_steps, na.rm = TRUE), col = "magenta", lwd = 2, lty = 2)
+text(c(15,15), pos = 4, "Mean=10751.74", cex = 1, col = "blue")
+text(c(14,14), pos = 4, "Median=10,656", cex = 1, col = "magenta")
+```
 
+Imputation by single mean value or multiple mean values resulted in the median approximating the mean value
 
 ## Are there differences in activity patterns between weekdays and weekends?
 
-To answer the question, we make a new factor variable in the dataset with two levels - "weekday" and "weekend" indicating whether a given date is a weekday or weekend day. We then extract the mean of the variable steps grouped according to interval and weektype.
+To answer the question, we make a new factor variable in the dataset with two levels - "weekday" and "weekend" indicating whether a given date is a weekday or weekend day. We then extract the mean of the variable steps grouped according to interval and weektype.  We will be using our data with the missing values replaced by a single mean value.
 
 ```{r, wkends}
 imp_act <- mutate(imp_act, weektype = ifelse(imp_act$weekday == 1 | imp_act$weekday == 7, "weekend", "weekday"))
@@ -237,6 +314,7 @@ library(ggplot2)
 g <- ggplot(sumimp_byintwkt, aes(x = interval, y = mean_steps, color = weektype)) + geom_line() + facet_wrap(~weektype, ncol = 1, nrow = 2) + ggtitle("Comparing The Mean Number of Steps\nduring Weekends and Weekdays") + xlab("Time Interval (Minutes)") + ylab("Mean Number of Steps")
 print(g)
 ```
+
 
 *We can see from the above that activity or the number of steps  increases abruptly and earlier during weekdays, plateaus, and then abruptly increase again, reaching peak levels around 9 am. 
 
