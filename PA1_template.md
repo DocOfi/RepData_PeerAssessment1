@@ -299,7 +299,7 @@ mean(!is.na(act$steps))
 ## [1] 0.8688525
 ```
 
-We can see that the number of missing values or NAs  compared to the total number of values in the the whole data (2.19%) is few.  However, if we look at the percentage of NAs in the steps variable column, we find that a the number of NAs compared to the total number of observations in this column is high (13.11%). The high percentage of missing data in this variable column can significantly affect the analysis of the data involving this variable.  We can further investigate the distribution of these missing values.
+We can see that the number of missing values or NAs  compared to the total number of values in the the whole data (2.19%) is few.  However, if we look at the percentage of NAs in the steps variable column, we find that the number of NAs compared to the total number of observations in this column is high (13.11%). The high percentage of missing data in this variable column can significantly affect the analysis of the data involving this variable.  We can further investigate the distribution of these missing values.
 
 
 ```r
@@ -361,7 +361,7 @@ print(wholeday_NAs[c(1, 8, 32, 35, 40, 41, 45, 61)])
 
 ### Distribution of missing values in the data
 
-In the following we can see that there are more missing values in November than in October.  More Missing values are found in Mondays and Fridays (represented by 2 and 6) compared to the rest of the week and the NAs are uniformly distributed in the observation intervals throughout the day.
+In the following we can see that there are more missing values in November than in October.  More Missing values are found in Mondays and Fridays (represented by 2 and 6) compared to the rest of the week and there are no missing values on Tuesdays. The NAs are uniformly distributed in the observation intervals throughout the day.
 
 
 ```r
@@ -453,7 +453,7 @@ head(imp_act)
 ## 6    NA 2012-10-01       25 October       2  274
 ```
 
-There are several strategies to replace missing values using single or multiple mean values.  The simplest solution to  replace the missing value is to use the impute function from the package Hmisc.  The impute function replaces all the missing values or NAs with a single value, the mean of all the values found in the variable column steps (37). 
+There are several strategies to replace missing values using single or multiple mean values.  The simplest solution to  replace the missing values is to use the impute function from the package Hmisc.  The impute function replaces all the missing values or NAs with a single value, the mean of all the values found in the variable column steps (37). 
 
 
 ```r
@@ -481,7 +481,7 @@ print(sumNAS_imp_act)
 ## [1] 0
 ```
 
-We can see now that there are 0 missing values in our new data frame with imputed values.
+After imputation, we can see now that there are 0 missing values in our new data frame with imputed values.
 
 
 ```r
@@ -540,11 +540,13 @@ text(c(14,14), pos = 4, "Median=10,656", cex = 1, col = "magenta")
 
 Do these values differ from the estimates from the first part of the assignment? What is the impact of imputing missing data on the estimates of the total daily number of steps? Let's compare it with the original data.
 
-Comparing the histograms of the data with NAs and the one with imputed values we can see that the mean and median of the data set with imputed values are closer together, indicating that the distribution of values in the steps variable have narrowed or grown closer together.  Results appear to have homogenized. Although, range, the maximum and the minimum value, are not affected. Values approximating the mean increased in frequency
+Comparing the histograms of the data with NAs and the one with imputed values we can see that the mean and median of the data set with imputed values are closer together, indicating that the distribution of values in the steps variable have narrowed or grown closer together.  Results appear to have homogenized. Although, range, the maximum and the minimum value, are not affected. Values approximating the mean increased in frequency as expected.
 
 A study  entitled ["Impact of missing data imputation methods on gene expression clustering and classification"](http://www.biomedcentral.com/1471-2105/16/64) performed a broad analysis of the impact of five well-known missing value imputation methods on three clustering and four classification methods in the context of 12 cancer gene expression datasets. 
 
-Their results suggest that the imputation methods evaluated have a minor impact on the classification and downstream clustering analyses and concluded that simple methods such as replacing the missing values by mean or the median values performed as well as more complex strategies..
+Their results suggest that the imputation methods evaluated have a minor impact on the classification and downstream clustering analyses and concluded that simple methods such as replacing the missing values by mean or the median values performed as well as more complex strategies.
+
+However, our esteemed professor, Dr. Roger D Peng in his lecture video [Evidence-based Data Analysis Part 3](https://class.coursera.org/repdata-033/lecture/45) explicitly stated that replacing missing values should not be performed.  In the particular scenario of a pollution study, data is hard to collect.  Data is collected once every six days and values are systematically missing for five days. "Imputing values for the days where there are no observation simply add more noise to the data".
 
 ### An alternative way to impute using multiple mean values.
 
@@ -676,7 +678,7 @@ text(c(14,14), pos = 4, "Median=10,656", cex = 1, col = "magenta")
 
 ![plot of chunk histoimp](figure/histoimp-1.png) 
 
-Imputation by single mean value or multiple mean values resulted in the median approximating the mean value and values approximating the mean increased in frequency. 
+Imputation by single mean value or multiple mean values resulted in the median approximating the mean value and values approximating the mean increased in frequency as expected. 
 
 ## Are there differences in activity patterns between weekdays and weekends?
 
@@ -715,15 +717,13 @@ print(g)
 ![plot of chunk timeser2](figure/timeser2-1.png) 
 
 
-*We can see from the above that activity or the number of steps  increases abruptly and earlier during weekdays, plateaus, and then abruptly increase again, reaching peak levels around 9 am. 
+*We can see from the above that activity or the number of steps  increases abruptly and earlier during weekdays, plateaus, and then abruptly increase again, reaching peak levels between 8 and 9 am. 
 
-*Activity or the number of steps during weekends begins gradually and have several small peaks throughout the day but never reaching the highest level seen during weekdays.  
+*Ini comparison, activity or the number of steps during weekends begins gradually and have several small peaks throughout the day but never reaching the highest level seen during weekdays.  
 
 *Peak activity level in the afternoon are several during weekdays and weekends.  However, peak levels during weekdays are smaller compared to the peak activity levels in the afternoon on weekends.
 
 *Activity during weekdays tend to taper earlier (around 6 pm) during weekdays, compared to weekends, where activity levels begin to taper around 8 pm.
-
-There were more time intervals where peak levels were reached during weekdays compared to weekends, 
 
 ## Session Information
 
@@ -753,16 +753,16 @@ sessionInfo()
 ## [5] lattice_0.20-33 dplyr_0.4.2     knitr_1.11     
 ## 
 ## loaded via a namespace (and not attached):
-##  [1] RColorBrewer_1.1-2  markdown_0.7.7      htmltools_0.2.6    
-##  [4] digest_0.6.8        R6_2.1.0            splines_3.2.1      
+##  [1] RColorBrewer_1.1-2  markdown_0.7.7      digest_0.6.8       
+##  [4] htmltools_0.2.6     R6_2.1.0            splines_3.2.1      
 ##  [7] scales_0.2.5        assertthat_0.1      stringr_1.0.0      
 ## [10] munsell_0.4.2       proto_0.3-10        highr_0.5          
 ## [13] nnet_7.3-10         mime_0.3            acepack_1.3-3.3    
 ## [16] DBI_0.3.1           labeling_0.3        MASS_7.3-43        
 ## [19] plyr_1.8.3          stringi_0.5-5       magrittr_1.5       
 ## [22] reshape2_1.4.1      rmarkdown_0.7       evaluate_0.7.2     
-## [25] gtable_0.1.2        colorspace_1.2-6    yaml_2.1.13        
-## [28] foreign_0.8-65      tools_3.2.1         parallel_3.2.1     
+## [25] gtable_0.1.2        colorspace_1.2-6    foreign_0.8-65     
+## [28] yaml_2.1.13         tools_3.2.1         parallel_3.2.1     
 ## [31] cluster_2.0.3       gridExtra_2.0.0     lazyeval_0.1.10    
 ## [34] formatR_1.2         rpart_4.1-10        Rcpp_0.12.0        
 ## [37] latticeExtra_0.6-26
