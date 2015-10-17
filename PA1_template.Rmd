@@ -88,7 +88,7 @@ print(median_steps_per_day)
 
 We present the results by creating a histogram to show the frequency distribution of the total number of steps per day. We added two vertical lines to show the median and the mean.
 
-```{r, hist, fig.width=5, fig.height=5}
+```{r, hist, fig.width=6, fig.height=6}
 hist(sum_byyday$sum_steps, col = "green", breaks = 8, xlab = "Total number of steps/day", main = "Frequency \nof total number of steps/day", col.main = "navy", col.lab = "navy", cex = 1.5)
 rug(sum_byyday$sum_steps)
 abline(v = mean(sum_byyday$sum_steps, na.rm = TRUE), col = "blue", lwd = 2, lty = 3)
@@ -124,7 +124,11 @@ print(interval_with_moststeps)
 The highest mean number of steps occurred occurred at 8:35 am.
  
 ```{r, time_act} 
-plot(meanstep_byinterval$mean_steps~meanstep_byinterval$interval, type = "l", xlab = "Time Interval (Min)", ylab = "Mean number of steps") 
+plot(meanstep_byinterval$interval/100, meanstep_byinterval$mean_steps, type = "l", xlab = "Time Interval (Hours)", ylab = "Mean number of steps") 
+abline(h = max(meanstep_byinterval$mean_steps, na.rm = TRUE), col = "magenta", lwd = 2, lty = 2)
+title(main = "Mean number of steps\nfor each Time Interval", col.main = "navy")
+text(c(180), pos = 4, offset = 11.1, "Max Steps=206.1698", cex = 1, col = "magenta")
+text(c(150), pos = 4, offset = 11.1, "Time Interval=8:35 am", cex = 1, col = "blue") 
 ```
 
 ## Imputing missing values
@@ -211,18 +215,18 @@ print(median_imp_stepsbyday)
 
 We now make the histogram
 
-```{r, histimp, fig.width=5, fig.height=5}
+```{r, histimp, fig.width=6, fig.height=6}
 hist(impactsum_byyday$sum_steps, col = "green", breaks = 8, xlab = "Total number of steps/day", main = "Frequency \nof total number of steps/day", sub = "Days with missing values replaced by single mean", col.main = "navy", col.lab = "navy", col.sub = "red", cex = 1,5)
 rug(impactsum_byyday$sum_steps)
 abline(v = mean(impactsum_byyday$sum_steps, na.rm = TRUE), col = "blue", lwd = 2, lty = 3)
 abline(v = median(impactsum_byyday$sum_steps, na.rm = TRUE), col = "magenta", lwd = 2, lty = 2)
-text(c(15,15), pos = 4, "Mean=10751.74", cex = 1, col = "blue")
+text(c(15,15), pos = 4, "Mean=10,751.74", cex = 1, col = "blue")
 text(c(14,14), pos = 4, "Median=10,656", cex = 1, col = "magenta")
 ```
 
 Do these values differ from the estimates from the first part of the assignment? What is the impact of imputing missing data on the estimates of the total daily number of steps? Let's compare it with the original data.
 
-Comparing the histograms of the data with NAs and the one with imputed values we can see that the mean and median of the data set with imputed values are closer together, indicating that the distribution of values in the steps variable have narrowed or grown closer together.  Results appear to have homogenized. Although, range, the maximum and the minimum value, are not affected.
+Comparing the histograms of the data with NAs and the one with imputed values we can see that the mean and median of the data set with imputed values are closer together, indicating that the distribution of values in the steps variable have narrowed or grown closer together.  Results appear to have homogenized. Although, range, the maximum and the minimum value, are not affected. Values approximating the mean increased in frequency
 
 A study  entitled ["Impact of missing data imputation methods on gene expression clustering and classification"](http://www.biomedcentral.com/1471-2105/16/64) performed a broad analysis of the impact of five well-known missing value imputation methods on three clustering and four classification methods in the context of 12 cancer gene expression datasets. 
 
@@ -267,25 +271,22 @@ head(multiimpactsum_byyday)
 ```
 We can now see the result of our imputation with multiple mean values.  Let's make a histogram for comparison with our original data and the one with missing values replaced by a single mean value. We added two vertical lines to show the median and the mean.
 
-```{r, histoimp, fig.width=5, fig.height=5}
+```{r, histoimp, fig.width=12, fig.height=5}
+par(mfrow=c(1,3))
 hist(multiimpactsum_byyday$sum_steps, col = "green", breaks = 8, xlab = "Total number of steps/day", main = "Frequency \nof total number of steps/day", sub = "Days with missing values replaced with multiple means", col.main = "navy", col.lab = "navy", col.sub = "red", cex = 1,5)
 rug(multiimpactsum_byyday$sum_steps)
 abline(v = mean(multiimpactsum_byyday$sum_steps, na.rm = TRUE), col = "blue", lwd = 2, lty = 3)
 abline(v = median(multiimpactsum_byyday$sum_steps, na.rm = TRUE), col = "magenta", lwd = 2, lty = 2)
 text(c(15,15), pos = 4, "Mean=10766.19", cex = 1, col = "blue")
 text(c(14,14), pos = 4, "Median=10,766.19", cex = 1, col = "magenta")
-```
 
-```{r, histcompare, fig.width=5, fig.height=5}
 hist(sum_byyday$sum_steps, col = "green", breaks = 8, xlab = "Total number of steps/day", main = "Frequency \nof total number of steps/day", sub = "Original data with missing values", col.main = "navy", col.lab = "navy", col.sub = "red", cex = 1.5)
 rug(sum_byyday$sum_steps)
 abline(v = mean(sum_byyday$sum_steps, na.rm = TRUE), col = "blue", lwd = 2, lty = 3)
 abline(v = median(sum_byyday$sum_steps, na.rm = TRUE), col = "magenta", lwd = 2, lty = 2) 
 text(c(15,15), pos = 4, "Mean=9354.23", cex = 1, col = "blue")
 text(c(14,14), pos = 4, "Median=10395", cex = 1, col = "magenta")
-```
 
-```{r, histsingleM, fig.width=5, fig.height=5}
 hist(impactsum_byyday$sum_steps, col = "green", breaks = 8, xlab = "Total number of steps/day", main = "Frequency \nof total number of steps/day", sub = "Days with missing values replaced by single mean", col.main = "navy", col.lab = "navy", col.sub = "red", cex = 1,5)
 rug(impactsum_byyday$sum_steps)
 abline(v = mean(impactsum_byyday$sum_steps, na.rm = TRUE), col = "blue", lwd = 2, lty = 3)
@@ -294,7 +295,7 @@ text(c(15,15), pos = 4, "Mean=10751.74", cex = 1, col = "blue")
 text(c(14,14), pos = 4, "Median=10,656", cex = 1, col = "magenta")
 ```
 
-Imputation by single mean value or multiple mean values resulted in the median approximating the mean value
+Imputation by single mean value or multiple mean values resulted in the median approximating the mean value and values approximating the mean increased in frequency. 
 
 ## Are there differences in activity patterns between weekdays and weekends?
 
@@ -311,7 +312,7 @@ head(sumimp_byintwkt)
 To visually compare the activity level during weekdays (Monday-Friday) and weekends (Saturday and Sunday), we make a panel plot containing a time series plot (i.e. type = "l") of the 5-minute interval (x-axis) and the average number of steps taken, averaged across all weekday days or weekend days (y-axis). 
 ```{r, timeser2}
 library(ggplot2)
-g <- ggplot(sumimp_byintwkt, aes(x = interval, y = mean_steps, color = weektype)) + geom_line() + facet_wrap(~weektype, ncol = 1, nrow = 2) + ggtitle("Comparing The Mean Number of Steps\nduring Weekends and Weekdays") + xlab("Time Interval (Minutes)") + ylab("Mean Number of Steps")
+g <- ggplot(sumimp_byintwkt, aes(x = interval/100, y = mean_steps, color = weektype)) + geom_line() + facet_wrap(~weektype, ncol = 1, nrow = 2) + ggtitle("Comparing The Mean Number of Steps\nduring Weekends and Weekdays") + xlab("Time Interval (Hours)") + ylab("Mean Number of Steps")
 print(g)
 ```
 

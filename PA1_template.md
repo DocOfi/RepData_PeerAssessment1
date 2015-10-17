@@ -227,7 +227,11 @@ The highest mean number of steps occurred occurred at 8:35 am.
  
 
 ```r
-plot(meanstep_byinterval$mean_steps~meanstep_byinterval$interval, type = "l", xlab = "Time Interval (Min)", ylab = "Mean number of steps") 
+plot(meanstep_byinterval$interval/100, meanstep_byinterval$mean_steps, type = "l", xlab = "Time Interval (Hours)", ylab = "Mean number of steps") 
+abline(h = max(meanstep_byinterval$mean_steps, na.rm = TRUE), col = "magenta", lwd = 2, lty = 2)
+title(main = "Mean number of steps\nfor each Time Interval", col.main = "navy")
+text(c(180), pos = 4, offset = 11.1, "Max Steps=206.1698", cex = 1, col = "magenta")
+text(c(150), pos = 4, offset = 11.1, "Time Interval=8:35 am", cex = 1, col = "blue") 
 ```
 
 ![plot of chunk time_act](figure/time_act-1.png) 
@@ -528,7 +532,7 @@ hist(impactsum_byyday$sum_steps, col = "green", breaks = 8, xlab = "Total number
 rug(impactsum_byyday$sum_steps)
 abline(v = mean(impactsum_byyday$sum_steps, na.rm = TRUE), col = "blue", lwd = 2, lty = 3)
 abline(v = median(impactsum_byyday$sum_steps, na.rm = TRUE), col = "magenta", lwd = 2, lty = 2)
-text(c(15,15), pos = 4, "Mean=10751.74", cex = 1, col = "blue")
+text(c(15,15), pos = 4, "Mean=10,751.74", cex = 1, col = "blue")
 text(c(14,14), pos = 4, "Median=10,656", cex = 1, col = "magenta")
 ```
 
@@ -536,7 +540,7 @@ text(c(14,14), pos = 4, "Median=10,656", cex = 1, col = "magenta")
 
 Do these values differ from the estimates from the first part of the assignment? What is the impact of imputing missing data on the estimates of the total daily number of steps? Let's compare it with the original data.
 
-Comparing the histograms of the data with NAs and the one with imputed values we can see that the mean and median of the data set with imputed values are closer together, indicating that the distribution of values in the steps variable have narrowed or grown closer together.  Results appear to have homogenized. Although, range, the maximum and the minimum value, are not affected.
+Comparing the histograms of the data with NAs and the one with imputed values we can see that the mean and median of the data set with imputed values are closer together, indicating that the distribution of values in the steps variable have narrowed or grown closer together.  Results appear to have homogenized. Although, range, the maximum and the minimum value, are not affected. Values approximating the mean increased in frequency
 
 A study  entitled ["Impact of missing data imputation methods on gene expression clustering and classification"](http://www.biomedcentral.com/1471-2105/16/64) performed a broad analysis of the impact of five well-known missing value imputation methods on three clustering and four classification methods in the context of 12 cancer gene expression datasets. 
 
@@ -647,30 +651,21 @@ We can now see the result of our imputation with multiple mean values.  Let's ma
 
 
 ```r
+par(mfrow=c(1,3))
 hist(multiimpactsum_byyday$sum_steps, col = "green", breaks = 8, xlab = "Total number of steps/day", main = "Frequency \nof total number of steps/day", sub = "Days with missing values replaced with multiple means", col.main = "navy", col.lab = "navy", col.sub = "red", cex = 1,5)
 rug(multiimpactsum_byyday$sum_steps)
 abline(v = mean(multiimpactsum_byyday$sum_steps, na.rm = TRUE), col = "blue", lwd = 2, lty = 3)
 abline(v = median(multiimpactsum_byyday$sum_steps, na.rm = TRUE), col = "magenta", lwd = 2, lty = 2)
 text(c(15,15), pos = 4, "Mean=10766.19", cex = 1, col = "blue")
 text(c(14,14), pos = 4, "Median=10,766.19", cex = 1, col = "magenta")
-```
 
-![plot of chunk histoimp](figure/histoimp-1.png) 
-
-
-```r
 hist(sum_byyday$sum_steps, col = "green", breaks = 8, xlab = "Total number of steps/day", main = "Frequency \nof total number of steps/day", sub = "Original data with missing values", col.main = "navy", col.lab = "navy", col.sub = "red", cex = 1.5)
 rug(sum_byyday$sum_steps)
 abline(v = mean(sum_byyday$sum_steps, na.rm = TRUE), col = "blue", lwd = 2, lty = 3)
 abline(v = median(sum_byyday$sum_steps, na.rm = TRUE), col = "magenta", lwd = 2, lty = 2) 
 text(c(15,15), pos = 4, "Mean=9354.23", cex = 1, col = "blue")
 text(c(14,14), pos = 4, "Median=10395", cex = 1, col = "magenta")
-```
 
-![plot of chunk histcompare](figure/histcompare-1.png) 
-
-
-```r
 hist(impactsum_byyday$sum_steps, col = "green", breaks = 8, xlab = "Total number of steps/day", main = "Frequency \nof total number of steps/day", sub = "Days with missing values replaced by single mean", col.main = "navy", col.lab = "navy", col.sub = "red", cex = 1,5)
 rug(impactsum_byyday$sum_steps)
 abline(v = mean(impactsum_byyday$sum_steps, na.rm = TRUE), col = "blue", lwd = 2, lty = 3)
@@ -679,9 +674,9 @@ text(c(15,15), pos = 4, "Mean=10751.74", cex = 1, col = "blue")
 text(c(14,14), pos = 4, "Median=10,656", cex = 1, col = "magenta")
 ```
 
-![plot of chunk histsingleM](figure/histsingleM-1.png) 
+![plot of chunk histoimp](figure/histoimp-1.png) 
 
-Imputation by single mean value or multiple mean values resulted in the median approximating the mean value
+Imputation by single mean value or multiple mean values resulted in the median approximating the mean value and values approximating the mean increased in frequency. 
 
 ## Are there differences in activity patterns between weekdays and weekends?
 
@@ -713,7 +708,7 @@ To visually compare the activity level during weekdays (Monday-Friday) and weeke
 
 ```r
 library(ggplot2)
-g <- ggplot(sumimp_byintwkt, aes(x = interval, y = mean_steps, color = weektype)) + geom_line() + facet_wrap(~weektype, ncol = 1, nrow = 2) + ggtitle("Comparing The Mean Number of Steps\nduring Weekends and Weekdays") + xlab("Time Interval (Minutes)") + ylab("Mean Number of Steps")
+g <- ggplot(sumimp_byintwkt, aes(x = interval/100, y = mean_steps, color = weektype)) + geom_line() + facet_wrap(~weektype, ncol = 1, nrow = 2) + ggtitle("Comparing The Mean Number of Steps\nduring Weekends and Weekdays") + xlab("Time Interval (Hours)") + ylab("Mean Number of Steps")
 print(g)
 ```
 
@@ -758,16 +753,17 @@ sessionInfo()
 ## [5] lattice_0.20-33 dplyr_0.4.2     knitr_1.11     
 ## 
 ## loaded via a namespace (and not attached):
-##  [1] RColorBrewer_1.1-2  digest_0.6.8        htmltools_0.2.6    
-##  [4] R6_2.1.0            splines_3.2.1       scales_0.2.5       
-##  [7] assertthat_0.1      stringr_1.0.0       munsell_0.4.2      
-## [10] proto_0.3-10        nnet_7.3-10         acepack_1.3-3.3    
-## [13] DBI_0.3.1           labeling_0.3        MASS_7.3-43        
-## [16] plyr_1.8.3          stringi_0.5-5       magrittr_1.5       
-## [19] reshape2_1.4.1      rmarkdown_0.7       evaluate_0.7.2     
-## [22] gtable_0.1.2        colorspace_1.2-6    foreign_0.8-65     
-## [25] yaml_2.1.13         tools_3.2.1         parallel_3.2.1     
-## [28] cluster_2.0.3       gridExtra_2.0.0     lazyeval_0.1.10    
-## [31] formatR_1.2         rpart_4.1-10        Rcpp_0.12.0        
-## [34] latticeExtra_0.6-26
+##  [1] RColorBrewer_1.1-2  markdown_0.7.7      htmltools_0.2.6    
+##  [4] digest_0.6.8        R6_2.1.0            splines_3.2.1      
+##  [7] scales_0.2.5        assertthat_0.1      stringr_1.0.0      
+## [10] munsell_0.4.2       proto_0.3-10        highr_0.5          
+## [13] nnet_7.3-10         mime_0.3            acepack_1.3-3.3    
+## [16] DBI_0.3.1           labeling_0.3        MASS_7.3-43        
+## [19] plyr_1.8.3          stringi_0.5-5       magrittr_1.5       
+## [22] reshape2_1.4.1      rmarkdown_0.7       evaluate_0.7.2     
+## [25] gtable_0.1.2        colorspace_1.2-6    yaml_2.1.13        
+## [28] foreign_0.8-65      tools_3.2.1         parallel_3.2.1     
+## [31] cluster_2.0.3       gridExtra_2.0.0     lazyeval_0.1.10    
+## [34] formatR_1.2         rpart_4.1-10        Rcpp_0.12.0        
+## [37] latticeExtra_0.6-26
 ```
