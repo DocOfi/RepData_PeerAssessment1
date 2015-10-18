@@ -92,18 +92,19 @@ We transformed the data from the variable column date and added column variables
 act$date <- as.Date(act$date)
 act$months <- month.name[as.POSIXlt(act$date)$mon + 1]
 act$weekday <- as.POSIXlt(act$date)$wday + 1
+act$weekday <- factor(act$weekday, labels = c("Sunday", "Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday"))
 act$yday <- as.POSIXlt(act$date)$yday
 head(act)
 ```
 
 ```
 ##   steps       date interval  months weekday yday
-## 1    NA 2012-10-01        0 October       2  274
-## 2    NA 2012-10-01        5 October       2  274
-## 3    NA 2012-10-01       10 October       2  274
-## 4    NA 2012-10-01       15 October       2  274
-## 5    NA 2012-10-01       20 October       2  274
-## 6    NA 2012-10-01       25 October       2  274
+## 1    NA 2012-10-01        0 October  Monday  274
+## 2    NA 2012-10-01        5 October  Monday  274
+## 3    NA 2012-10-01       10 October  Monday  274
+## 4    NA 2012-10-01       15 October  Monday  274
+## 5    NA 2012-10-01       20 October  Monday  274
+## 6    NA 2012-10-01       25 October  Monday  274
 ```
 
 ## What is the mean total number of steps taken per day?
@@ -383,8 +384,8 @@ table(NAdf$weekday)
 
 ```
 ## 
-##   1   2   4   5   6   7 
-## 288 576 288 288 576 288
+##    Sunday    Monday   Tuesday Wednesday  Thursday    Friday  Saturday 
+##       288       576         0       288       288       576       288
 ```
 
 ```r
@@ -447,12 +448,12 @@ head(imp_act)
 
 ```
 ##   steps       date interval  months weekday yday
-## 1    NA 2012-10-01        0 October       2  274
-## 2    NA 2012-10-01        5 October       2  274
-## 3    NA 2012-10-01       10 October       2  274
-## 4    NA 2012-10-01       15 October       2  274
-## 5    NA 2012-10-01       20 October       2  274
-## 6    NA 2012-10-01       25 October       2  274
+## 1    NA 2012-10-01        0 October  Monday  274
+## 2    NA 2012-10-01        5 October  Monday  274
+## 3    NA 2012-10-01       10 October  Monday  274
+## 4    NA 2012-10-01       15 October  Monday  274
+## 5    NA 2012-10-01       20 October  Monday  274
+## 6    NA 2012-10-01       25 October  Monday  274
 ```
 
 There are several strategies to replace missing values using single or multiple mean values.  The simplest solution to  replace the missing values is to use the impute function from the package Hmisc.  The impute function replaces all the missing values or NAs with a single value, the mean of all the values found in the variable column steps (37). 
@@ -467,12 +468,12 @@ head(imp_act)
 
 ```
 ##   steps       date interval  months weekday yday
-## 1    37 2012-10-01        0 October       2  274
-## 2    37 2012-10-01        5 October       2  274
-## 3    37 2012-10-01       10 October       2  274
-## 4    37 2012-10-01       15 October       2  274
-## 5    37 2012-10-01       20 October       2  274
-## 6    37 2012-10-01       25 October       2  274
+## 1    37 2012-10-01        0 October  Monday  274
+## 2    37 2012-10-01        5 October  Monday  274
+## 3    37 2012-10-01       10 October  Monday  274
+## 4    37 2012-10-01       15 October  Monday  274
+## 5    37 2012-10-01       20 October  Monday  274
+## 6    37 2012-10-01       25 October  Monday  274
 ```
 
 ```r
@@ -574,12 +575,12 @@ head(mean_act, 6)
 
 ```
 ##   interval steps       date  months weekday yday mean_steps
-## 1        0    NA 2012-10-01 October       2  274  1.7169811
-## 2        5    NA 2012-10-01 October       2  274  0.3396226
-## 3       10    NA 2012-10-01 October       2  274  0.1320755
-## 4       15    NA 2012-10-01 October       2  274  0.1509434
-## 5       20    NA 2012-10-01 October       2  274  0.0754717
-## 6       25    NA 2012-10-01 October       2  274  2.0943396
+## 1        0    NA 2012-10-01 October  Monday  274  1.7169811
+## 2        5    NA 2012-10-01 October  Monday  274  0.3396226
+## 3       10    NA 2012-10-01 October  Monday  274  0.1320755
+## 4       15    NA 2012-10-01 October  Monday  274  0.1509434
+## 5       20    NA 2012-10-01 October  Monday  274  0.0754717
+## 6       25    NA 2012-10-01 October  Monday  274  2.0943396
 ```
 
 Let's replace the NAs in the steps column variable
@@ -600,16 +601,16 @@ head(mean_act, 10)
 
 ```
 ##    interval     steps       date  months weekday yday mean_steps
-## 1         0 1.7169811 2012-10-01 October       2  274  1.7169811
-## 2         5 0.3396226 2012-10-01 October       2  274  0.3396226
-## 3        10 0.1320755 2012-10-01 October       2  274  0.1320755
-## 4        15 0.1509434 2012-10-01 October       2  274  0.1509434
-## 5        20 0.0754717 2012-10-01 October       2  274  0.0754717
-## 6        25 2.0943396 2012-10-01 October       2  274  2.0943396
-## 7        30 0.5283019 2012-10-01 October       2  274  0.5283019
-## 8        35 0.8679245 2012-10-01 October       2  274  0.8679245
-## 9        40 0.0000000 2012-10-01 October       2  274  0.0000000
-## 10       45 1.4716981 2012-10-01 October       2  274  1.4716981
+## 1         0 1.7169811 2012-10-01 October  Monday  274  1.7169811
+## 2         5 0.3396226 2012-10-01 October  Monday  274  0.3396226
+## 3        10 0.1320755 2012-10-01 October  Monday  274  0.1320755
+## 4        15 0.1509434 2012-10-01 October  Monday  274  0.1509434
+## 5        20 0.0754717 2012-10-01 October  Monday  274  0.0754717
+## 6        25 2.0943396 2012-10-01 October  Monday  274  2.0943396
+## 7        30 0.5283019 2012-10-01 October  Monday  274  0.5283019
+## 8        35 0.8679245 2012-10-01 October  Monday  274  0.8679245
+## 9        40 0.0000000 2012-10-01 October  Monday  274  0.0000000
+## 10       45 1.4716981 2012-10-01 October  Monday  274  1.4716981
 ```
 
 ```r
@@ -618,16 +619,16 @@ tail(mean_act, 10)
 
 ```
 ##       interval     steps       date   months weekday yday mean_steps
-## 17559     2310 0.0000000 2012-11-30 November       6  334  0.0000000
-## 17560     2315 0.8301887 2012-11-30 November       6  334  0.8301887
-## 17561     2320 0.9622642 2012-11-30 November       6  334  0.9622642
-## 17562     2325 1.5849057 2012-11-30 November       6  334  1.5849057
-## 17563     2330 2.6037736 2012-11-30 November       6  334  2.6037736
-## 17564     2335 4.6981132 2012-11-30 November       6  334  4.6981132
-## 17565     2340 3.3018868 2012-11-30 November       6  334  3.3018868
-## 17566     2345 0.6415094 2012-11-30 November       6  334  0.6415094
-## 17567     2350 0.2264151 2012-11-30 November       6  334  0.2264151
-## 17568     2355 1.0754717 2012-11-30 November       6  334  1.0754717
+## 17559     2310 0.0000000 2012-11-30 November  Friday  334  0.0000000
+## 17560     2315 0.8301887 2012-11-30 November  Friday  334  0.8301887
+## 17561     2320 0.9622642 2012-11-30 November  Friday  334  0.9622642
+## 17562     2325 1.5849057 2012-11-30 November  Friday  334  1.5849057
+## 17563     2330 2.6037736 2012-11-30 November  Friday  334  2.6037736
+## 17564     2335 4.6981132 2012-11-30 November  Friday  334  4.6981132
+## 17565     2340 3.3018868 2012-11-30 November  Friday  334  3.3018868
+## 17566     2345 0.6415094 2012-11-30 November  Friday  334  0.6415094
+## 17567     2350 0.2264151 2012-11-30 November  Friday  334  0.2264151
+## 17568     2355 1.0754717 2012-11-30 November  Friday  334  1.0754717
 ```
 
 We now take the total number of steps each day, 
@@ -688,7 +689,7 @@ To answer the question, we make a new factor variable in the dataset with two le
 
 
 ```r
-imp_act <- mutate(imp_act, weektype = ifelse(imp_act$weekday == 1 | imp_act$weekday == 7, "weekend", "weekday"))
+imp_act <- mutate(imp_act, weektype = ifelse(imp_act$weekday == "Sunday" | imp_act$weekday == "Saturday", "weekend", "weekday"))
 imp_byintwkt <-group_by(imp_act, interval, weektype)
 sumimp_byintwkt <-summarise(imp_byintwkt, mean(steps))
 colnames(sumimp_byintwkt)[3] <-c("mean_steps")
@@ -754,20 +755,20 @@ sessionInfo()
 ## [8] base     
 ## 
 ## other attached packages:
-## [1] Hmisc_3.16-0    ggplot2_1.0.1   Formula_1.2-1   survival_2.38-3
-## [5] lattice_0.20-33 dplyr_0.4.2     knitr_1.11     
+## [1] knitr_1.11      Hmisc_3.16-0    ggplot2_1.0.1   Formula_1.2-1  
+## [5] survival_2.38-3 lattice_0.20-33 dplyr_0.4.2    
 ## 
 ## loaded via a namespace (and not attached):
-##  [1] RColorBrewer_1.1-2  markdown_0.7.7      htmltools_0.2.6    
-##  [4] digest_0.6.8        R6_2.1.0            splines_3.2.1      
-##  [7] scales_0.2.5        assertthat_0.1      stringr_1.0.0      
-## [10] munsell_0.4.2       proto_0.3-10        nnet_7.3-10        
-## [13] mime_0.3            acepack_1.3-3.3     DBI_0.3.1          
-## [16] labeling_0.3        MASS_7.3-43         plyr_1.8.3         
-## [19] stringi_0.5-5       magrittr_1.5        reshape2_1.4.1     
-## [22] rmarkdown_0.7       evaluate_0.7.2      gtable_0.1.2       
-## [25] colorspace_1.2-6    yaml_2.1.13         foreign_0.8-65     
-## [28] tools_3.2.1         parallel_3.2.1      cluster_2.0.3      
-## [31] gridExtra_2.0.0     lazyeval_0.1.10     formatR_1.2        
-## [34] rpart_4.1-10        Rcpp_0.12.0         latticeExtra_0.6-26
+##  [1] RColorBrewer_1.1-2  digest_0.6.8        htmltools_0.2.6    
+##  [4] R6_2.1.0            splines_3.2.1       scales_0.2.5       
+##  [7] assertthat_0.1      stringr_1.0.0       munsell_0.4.2      
+## [10] proto_0.3-10        nnet_7.3-10         acepack_1.3-3.3    
+## [13] DBI_0.3.1           labeling_0.3        MASS_7.3-43        
+## [16] plyr_1.8.3          stringi_0.5-5       magrittr_1.5       
+## [19] reshape2_1.4.1      evaluate_0.7.2      rmarkdown_0.7      
+## [22] gtable_0.1.2        colorspace_1.2-6    foreign_0.8-65     
+## [25] yaml_2.1.13         tools_3.2.1         parallel_3.2.1     
+## [28] cluster_2.0.3       gridExtra_2.0.0     lazyeval_0.1.10    
+## [31] formatR_1.2         rpart_4.1-10        Rcpp_0.12.0        
+## [34] latticeExtra_0.6-26
 ```

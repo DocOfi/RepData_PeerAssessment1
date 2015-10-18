@@ -57,6 +57,7 @@ We transformed the data from the variable column date and added column variables
 act$date <- as.Date(act$date)
 act$months <- month.name[as.POSIXlt(act$date)$mon + 1]
 act$weekday <- as.POSIXlt(act$date)$wday + 1
+act$weekday <- factor(act$weekday, labels = c("Sunday", "Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday"))
 act$yday <- as.POSIXlt(act$date)$yday
 head(act)
 ```
@@ -306,7 +307,7 @@ Imputation by single mean value or multiple mean values resulted in the median a
 To answer the question, we make a new factor variable in the dataset with two levels - "weekday" and "weekend" indicating whether a given date is a weekday or weekend day. We then extract the mean of the variable steps grouped according to interval and weektype.  We will be using our data with the missing values replaced by a single mean value.
 
 ```{r, wkends}
-imp_act <- mutate(imp_act, weektype = ifelse(imp_act$weekday == 1 | imp_act$weekday == 7, "weekend", "weekday"))
+imp_act <- mutate(imp_act, weektype = ifelse(imp_act$weekday == "Sunday" | imp_act$weekday == "Saturday", "weekend", "weekday"))
 imp_byintwkt <-group_by(imp_act, interval, weektype)
 sumimp_byintwkt <-summarise(imp_byintwkt, mean(steps))
 colnames(sumimp_byintwkt)[3] <-c("mean_steps")
