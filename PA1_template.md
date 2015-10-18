@@ -8,6 +8,8 @@ output:
 ---
 
 
+
+
 ## Introduction
 This course focuses on the concepts and tools behind reporting modern data analyses in a reproducible manner. Reproducible research is the idea that data analyses, and more generally, scientific claims, are published with their data and software code so that others may verify the findings and build upon them. The need for reproducibility is increasing dramatically as data analyses become more complex, involving larger datasets and more sophisticated computations. Reproducibility allows for people to focus on the actual content of a data analysis, rather than on superficial details reported in a written summary Taken from the website of [Reproducible Research](https://www.coursera.org/course/repdata).
 
@@ -710,20 +712,23 @@ To visually compare the activity level during weekdays (Monday-Friday) and weeke
 
 ```r
 library(ggplot2)
-g <- ggplot(sumimp_byintwkt, aes(x = interval/100, y = mean_steps, color = weektype)) + geom_line() + facet_wrap(~weektype, ncol = 1, nrow = 2) + ggtitle("Comparing The Mean Number of Steps\nduring Weekends and Weekdays") + xlab("Time Interval (Hours)") + ylab("Mean Number of Steps")
+g <- ggplot(sumimp_byintwkt, aes(x = interval/100, y = mean_steps, color = weektype)) + geom_line() + facet_wrap(~weektype, ncol = 1, nrow = 2) + ggtitle("Comparing The Mean Number of Steps\nduring Weekends and Weekdays") + xlab("Time Interval (Hours)") + ylab("Mean Number of Steps") + geom_hline(aes(yintercept= max(sumimp_byintwkt$mean_steps))) + geom_hline(aes(yintercept= max(subset(sumimp_byintwkt, sumimp_byintwkt$weektype == "weekend")$mean_steps))) + geom_line(stat="hline", yintercept="mean")
 print(g)
 ```
 
 ![plot of chunk timeser2](figure/timeser2-1.png) 
 
+1. The black lines represent the difference between the mean maximum number of steps during weekdays and weekends.  
 
-*We can see from the above that activity or the number of steps  increases abruptly and earlier during weekdays, plateaus, and then abruptly increase again, reaching peak levels between 8 and 9 am. 
+2. The blue and pink lines represent the respective means of the mean number of steps during weekends and weekdays. It is surprising to know that the mean of the weekends (42.32) is greater than the mean during weekdays(35.56).
 
-*Ini comparison, activity or the number of steps during weekends begins gradually and have several small peaks throughout the day but never reaching the highest level seen during weekdays.  
+2. We can see from the above that activity or the number of steps  increases abruptly and earlier during weekdays, plateaus, and then abruptly increase again, reaching peak levels between 8 and 9 am. 
 
-*Peak activity level in the afternoon are several during weekdays and weekends.  However, peak levels during weekdays are smaller compared to the peak activity levels in the afternoon on weekends.
+2. In comparison, activity or the number of steps during weekends begins gradually and have several small peaks throughout the day but never reaching the highest level seen during weekdays.  
 
-*Activity during weekdays tend to taper earlier (around 6 pm) during weekdays, compared to weekends, where activity levels begin to taper around 8 pm.
+2. Peak activity level in the afternoon are several during weekdays and weekends.  However, peak levels during weekdays are smaller compared to the peak activity levels in the afternoon on weekends.
+
+2. Activity during weekdays tend to taper earlier (around 6 pm) during weekdays, compared to weekends, where activity levels begin to taper around 8 pm.
 
 ## Session Information
 
@@ -753,17 +758,16 @@ sessionInfo()
 ## [5] lattice_0.20-33 dplyr_0.4.2     knitr_1.11     
 ## 
 ## loaded via a namespace (and not attached):
-##  [1] RColorBrewer_1.1-2  markdown_0.7.7      digest_0.6.8       
-##  [4] htmltools_0.2.6     R6_2.1.0            splines_3.2.1      
+##  [1] RColorBrewer_1.1-2  markdown_0.7.7      htmltools_0.2.6    
+##  [4] digest_0.6.8        R6_2.1.0            splines_3.2.1      
 ##  [7] scales_0.2.5        assertthat_0.1      stringr_1.0.0      
-## [10] munsell_0.4.2       proto_0.3-10        highr_0.5          
-## [13] nnet_7.3-10         mime_0.3            acepack_1.3-3.3    
-## [16] DBI_0.3.1           labeling_0.3        MASS_7.3-43        
-## [19] plyr_1.8.3          stringi_0.5-5       magrittr_1.5       
-## [22] reshape2_1.4.1      rmarkdown_0.7       evaluate_0.7.2     
-## [25] gtable_0.1.2        colorspace_1.2-6    foreign_0.8-65     
-## [28] yaml_2.1.13         tools_3.2.1         parallel_3.2.1     
-## [31] cluster_2.0.3       gridExtra_2.0.0     lazyeval_0.1.10    
-## [34] formatR_1.2         rpart_4.1-10        Rcpp_0.12.0        
-## [37] latticeExtra_0.6-26
+## [10] munsell_0.4.2       proto_0.3-10        nnet_7.3-10        
+## [13] mime_0.3            acepack_1.3-3.3     DBI_0.3.1          
+## [16] labeling_0.3        MASS_7.3-43         plyr_1.8.3         
+## [19] stringi_0.5-5       magrittr_1.5        reshape2_1.4.1     
+## [22] rmarkdown_0.7       evaluate_0.7.2      gtable_0.1.2       
+## [25] colorspace_1.2-6    yaml_2.1.13         foreign_0.8-65     
+## [28] tools_3.2.1         parallel_3.2.1      cluster_2.0.3      
+## [31] gridExtra_2.0.0     lazyeval_0.1.10     formatR_1.2        
+## [34] rpart_4.1-10        Rcpp_0.12.0         latticeExtra_0.6-26
 ```

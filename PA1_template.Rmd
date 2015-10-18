@@ -6,6 +6,8 @@ output:
   html_document:
     toc: yes
 ---
+
+
 ```{r global_options, include=FALSE}
 knitr::opts_chunk$set(echo=TRUE, warning=FALSE, message=FALSE)
 ```
@@ -147,7 +149,7 @@ mean(is.na(act$steps))
 mean(!is.na(act$steps))
 ```
 
-We can see that the number of missing values or NAs  compared to the total number of values in the the whole data (`r round(mean(is.na(act))* 100, 2)`%) is few.  However, if we look at the percentage of NAs in the steps variable column, we find that a the number of NAs compared to the total number of observations in this column is high (`r round(mean(is.na(act$steps))* 100, 2)`%). The high percentage of missing data in this variable column can significantly affect the analysis of the data involving this variable.  We can further investigate the distribution of these missing values.
+We can see that the number of missing values or NAs  compared to the total number of values in the the whole data (`r round(mean(is.na(act))* 100, 2)`%) is few.  However, if we look at the percentage of NAs in the steps variable column, we find that the number of NAs compared to the total number of observations in this column is high (`r round(mean(is.na(act$steps))* 100, 2)`%). The high percentage of missing data in this variable column can significantly affect the analysis of the data involving this variable.  We can further investigate the distribution of these missing values.
 
 ```{r, time}
 missing_values <- is.na(act$steps)
@@ -167,7 +169,7 @@ print(wholeday_NAs[c(1, 8, 32, 35, 40, 41, 45, 61)])
 
 ### Distribution of missing values in the data
 
-In the following we can see that there are more missing values in November than in October.  More Missing values are found in Mondays and Fridays (represented by 2 and 6) compared to the rest of the week and the NAs are uniformly distributed in the observation intervals throughout the day.
+In the following we can see that there are more missing values in November than in October.  More Missing values are found in Mondays and Fridays (represented by 2 and 6) compared to the rest of the week and there are no missing values on Tuesdays. The NAs are uniformly distributed in the observation intervals throughout the day.
 
 ```{r, Yiming}
 NAdf <- act[is.na(act$steps), ]
@@ -185,7 +187,7 @@ imp_act <- act
 head(imp_act)
 ```
 
-There are several strategies to replace missing values using single or multiple mean values.  The simplest solution to  replace the missing value is to use the impute function from the package Hmisc.  The impute function replaces all the missing values or NAs with a single value, the mean of all the values found in the variable column steps (`r round(mean(act$steps, na.rm = TRUE))`). 
+There are several strategies to replace missing values using single or multiple mean values.  The simplest solution to  replace the missing values is to use the impute function from the package Hmisc.  The impute function replaces all the missing values or NAs with a single value, the mean of all the values found in the variable column steps (`r round(mean(act$steps, na.rm = TRUE))`). 
 
 ```{r, hmis}
 library(Hmisc)
@@ -195,7 +197,7 @@ head(imp_act)
 print(sumNAS_imp_act)
 ```
 
-We can see now that there are `r sum(is.na(imp_act))` missing values in our new data frame with imputed values.
+After imputation, we can see now that there are `r sum(is.na(imp_act))` missing values in our new data frame with imputed values.
 
 ```{r, sum_imp}
 impactby_yday <-group_by(imp_act, yday)
@@ -226,11 +228,13 @@ text(c(14,14), pos = 4, "Median=10,656", cex = 1, col = "magenta")
 
 Do these values differ from the estimates from the first part of the assignment? What is the impact of imputing missing data on the estimates of the total daily number of steps? Let's compare it with the original data.
 
-Comparing the histograms of the data with NAs and the one with imputed values we can see that the mean and median of the data set with imputed values are closer together, indicating that the distribution of values in the steps variable have narrowed or grown closer together.  Results appear to have homogenized. Although, range, the maximum and the minimum value, are not affected. Values approximating the mean increased in frequency
+Comparing the histograms of the data with NAs and the one with imputed values we can see that the mean and median of the data set with imputed values are closer together, indicating that the distribution of values in the steps variable have narrowed or grown closer together.  Results appear to have homogenized. Although, range, the maximum and the minimum value, are not affected. Values approximating the mean increased in frequency as expected.
 
 A study  entitled ["Impact of missing data imputation methods on gene expression clustering and classification"](http://www.biomedcentral.com/1471-2105/16/64) performed a broad analysis of the impact of five well-known missing value imputation methods on three clustering and four classification methods in the context of 12 cancer gene expression datasets. 
 
-Their results suggest that the imputation methods evaluated have a minor impact on the classification and downstream clustering analyses and concluded that simple methods such as replacing the missing values by mean or the median values performed as well as more complex strategies..
+Their results suggest that the imputation methods evaluated have a minor impact on the classification and downstream clustering analyses and concluded that simple methods such as replacing the missing values by mean or the median values performed as well as more complex strategies.
+
+However, our esteemed professor, Dr. Roger D Peng in his lecture video [Evidence-based Data Analysis Part 3](https://class.coursera.org/repdata-033/lecture/45) explicitly stated that replacing missing values should not be performed.  In the particular scenario of a pollution study, data is hard to collect.  Data is collected once every six days and values are systematically missing for five days. "Imputing values for the days where there are no observation simply add more noise to the data".
 
 ### An alternative way to impute using multiple mean values.
 
@@ -295,7 +299,7 @@ text(c(15,15), pos = 4, "Mean=10751.74", cex = 1, col = "blue")
 text(c(14,14), pos = 4, "Median=10,656", cex = 1, col = "magenta")
 ```
 
-Imputation by single mean value or multiple mean values resulted in the median approximating the mean value and values approximating the mean increased in frequency. 
+Imputation by single mean value or multiple mean values resulted in the median approximating the mean value and values approximating the mean increased in frequency as expected. 
 
 ## Are there differences in activity patterns between weekdays and weekends?
 
@@ -312,20 +316,21 @@ head(sumimp_byintwkt)
 To visually compare the activity level during weekdays (Monday-Friday) and weekends (Saturday and Sunday), we make a panel plot containing a time series plot (i.e. type = "l") of the 5-minute interval (x-axis) and the average number of steps taken, averaged across all weekday days or weekend days (y-axis). 
 ```{r, timeser2}
 library(ggplot2)
-g <- ggplot(sumimp_byintwkt, aes(x = interval/100, y = mean_steps, color = weektype)) + geom_line() + facet_wrap(~weektype, ncol = 1, nrow = 2) + ggtitle("Comparing The Mean Number of Steps\nduring Weekends and Weekdays") + xlab("Time Interval (Hours)") + ylab("Mean Number of Steps")
+g <- ggplot(sumimp_byintwkt, aes(x = interval/100, y = mean_steps, color = weektype)) + geom_line() + facet_wrap(~weektype, ncol = 1, nrow = 2) + ggtitle("Comparing The Mean Number of Steps\nduring Weekends and Weekdays") + xlab("Time Interval (Hours)") + ylab("Mean Number of Steps") + geom_hline(aes(yintercept= max(sumimp_byintwkt$mean_steps))) + geom_hline(aes(yintercept= max(subset(sumimp_byintwkt, sumimp_byintwkt$weektype == "weekend")$mean_steps))) + geom_line(stat="hline", yintercept="mean")
 print(g)
 ```
 
+1. The black lines represent the difference between the mean maximum number of steps during weekdays and weekends.  
 
-*We can see from the above that activity or the number of steps  increases abruptly and earlier during weekdays, plateaus, and then abruptly increase again, reaching peak levels around 9 am. 
+2. The blue and pink lines represent the respective means of the mean number of steps during weekends and weekdays. It is surprising to know that the mean of the weekends (`r round(mean(subset(sumimp_byintwkt, sumimp_byintwkt$weektype == "weekend")$mean_steps), 2)`) is greater than the mean during weekdays(`r round(mean(subset(sumimp_byintwkt, sumimp_byintwkt$weektype == "weekday")$mean_steps), 2)`).
 
-*Activity or the number of steps during weekends begins gradually and have several small peaks throughout the day but never reaching the highest level seen during weekdays.  
+2. We can see from the above that activity or the number of steps  increases abruptly and earlier during weekdays, plateaus, and then abruptly increase again, reaching peak levels between 8 and 9 am. 
 
-*Peak activity level in the afternoon are several during weekdays and weekends.  However, peak levels during weekdays are smaller compared to the peak activity levels in the afternoon on weekends.
+2. In comparison, activity or the number of steps during weekends begins gradually and have several small peaks throughout the day but never reaching the highest level seen during weekdays.  
 
-*Activity during weekdays tend to taper earlier (around 6 pm) during weekdays, compared to weekends, where activity levels begin to taper around 8 pm.
+2. Peak activity level in the afternoon are several during weekdays and weekends.  However, peak levels during weekdays are smaller compared to the peak activity levels in the afternoon on weekends.
 
-There were more time intervals where peak levels were reached during weekdays compared to weekends, 
+2. Activity during weekdays tend to taper earlier (around 6 pm) during weekdays, compared to weekends, where activity levels begin to taper around 8 pm.
 
 ## Session Information
 
