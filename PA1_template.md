@@ -657,7 +657,7 @@ We can now see the result of our imputation with multiple mean values.  Let's ma
 
 ```r
 par(mfrow=c(1,3))
-hist(multiimpactsum_byyday$sum_steps, col = "green", breaks = 8, xlab = "Total number of steps/day", main = "Frequency \nof total number of steps/day", sub = "Days with missing values replaced with multiple means", col.main = "navy", col.lab = "navy", col.sub = "red", cex = 1,5)
+hist(multiimpactsum_byyday$sum_steps, col = "green", breaks = 8, xlab = "Total number of steps/day", main = "Frequency \nof total number of steps/day", sub = "Days with missing values replaced with multiple means", col.main = "navy", col.lab = "navy", col.sub = "red", cex = 1.5)
 rug(multiimpactsum_byyday$sum_steps)
 abline(v = mean(multiimpactsum_byyday$sum_steps, na.rm = TRUE), col = "blue", lwd = 2, lty = 3)
 abline(v = median(multiimpactsum_byyday$sum_steps, na.rm = TRUE), col = "magenta", lwd = 2, lty = 2)
@@ -671,7 +671,7 @@ abline(v = median(sum_byyday$sum_steps, na.rm = TRUE), col = "magenta", lwd = 2,
 text(c(15,15), pos = 4, "Mean=9354.23", cex = 1, col = "blue")
 text(c(14,14), pos = 4, "Median=10395", cex = 1, col = "magenta")
 
-hist(impactsum_byyday$sum_steps, col = "green", breaks = 8, xlab = "Total number of steps/day", main = "Frequency \nof total number of steps/day", sub = "Days with missing values replaced by single mean", col.main = "navy", col.lab = "navy", col.sub = "red", cex = 1,5)
+hist(impactsum_byyday$sum_steps, col = "green", breaks = 8, xlab = "Total number of steps/day", main = "Frequency \nof total number of steps/day", sub = "Days with missing values replaced by single mean", col.main = "navy", col.lab = "navy", col.sub = "red", cex = 1.5)
 rug(impactsum_byyday$sum_steps)
 abline(v = mean(impactsum_byyday$sum_steps, na.rm = TRUE), col = "blue", lwd = 2, lty = 3)
 abline(v = median(impactsum_byyday$sum_steps, na.rm = TRUE), col = "magenta", lwd = 2, lty = 2)
@@ -682,6 +682,79 @@ text(c(14,14), pos = 4, "Median=10,656", cex = 1, col = "magenta")
 ![plot of chunk histoimp](figure/histoimp-1.png) 
 
 Imputation by single mean value or multiple mean values resulted in the median approximating the mean value and values approximating the mean increased in frequency as expected. 
+
+### Comparing the mean and median in the same data, with one where missing values are removed, and the other where missing values are replaced with mean values.
+
+There are 8 days where the total number of steps is 0.  The number of steps is not actually zero, but rather, data during these days are missing.  During the computation for the total number of steps, the missing values were conveniently represented by 0
+
+
+```r
+sum_byydayNA <- sum_byyday[sum_byyday$sum_steps == 0, ]
+print(sum_byydayNA)
+```
+
+```
+## Source: local data frame [8 x 2]
+## 
+##   nth_day sum_steps
+## 1     274         0
+## 2     281         0
+## 3     305         0
+## 4     308         0
+## 5     313         0
+## 6     314         0
+## 7     318         0
+## 8     334         0
+```
+
+```r
+sum_byydaynoNA <- sum_byyday[sum_byyday$sum_steps != 0, ]
+head(sum_byydaynoNA)
+```
+
+```
+## Source: local data frame [6 x 2]
+## 
+##   nth_day sum_steps
+## 1     275       126
+## 2     276     11352
+## 3     277     12116
+## 4     278     13294
+## 5     279     15420
+## 6     280     11015
+```
+
+Removing these days in the computation of the mean and median yields a similar mean and median where the missing values are replaced by single or multiple mean values.
+
+
+```r
+par(mfrow=c(1,3))
+hist(multiimpactsum_byyday$sum_steps, col = "green", breaks = 8, xlab = "Total number of steps/day", main = "Frequency \nof total number of steps/day", sub = "Days with missing values replaced with multiple means", col.main = "navy", col.lab = "navy", col.sub = "red", cex = 2.5)
+rug(multiimpactsum_byyday$sum_steps)
+abline(v = mean(multiimpactsum_byyday$sum_steps, na.rm = TRUE), col = "blue", lwd = 2, lty = 3)
+abline(v = median(multiimpactsum_byyday$sum_steps, na.rm = TRUE), col = "magenta", lwd = 2, lty = 2)
+text(c(15,15), pos = 4, "Mean=10766.19", cex = 1, col = "blue")
+text(c(14,14), pos = 4, "Median=10,766.19", cex = 1, col = "magenta")
+
+hist(sum_byydaynoNA$sum_steps, col = "green", breaks = 8, xlab = "Total number of steps/day", main = "Frequency \nof total number of steps/day", sub = "Original data with missing values Removed", col.main = "navy", col.lab = "navy", col.sub = "red", cex = 2.5)
+rug(sum_byydaynoNA$sum_steps)
+abline(v = mean(sum_byydaynoNA$sum_steps, na.rm = TRUE), col = "blue", lwd = 2, lty = 3)
+abline(v = median(sum_byydaynoNA$sum_steps, na.rm = TRUE), col = "magenta", lwd = 2, lty = 2) 
+text(c(15,15), pos = 4, "Mean=10,766.19", cex = 1, col = "blue")
+text(c(14,14), pos = 4, "Median=10,765", cex = 1, col = "magenta")
+
+hist(impactsum_byyday$sum_steps, col = "green", breaks = 8, xlab = "Total number of steps/day", main = "Frequency \nof total number of steps/day", sub = "Days with missing values replaced by single mean", col.main = "navy", col.lab = "navy", col.sub = "red", cex = 2.5)
+rug(impactsum_byyday$sum_steps)
+abline(v = mean(impactsum_byyday$sum_steps, na.rm = TRUE), col = "blue", lwd = 2, lty = 3)
+abline(v = median(impactsum_byyday$sum_steps, na.rm = TRUE), col = "magenta", lwd = 2, lty = 2)
+text(c(15,15), pos = 4, "Mean=10,751.74", cex = 1, col = "blue")
+text(c(14,14), pos = 4, "Median=10,656", cex = 1, col = "magenta")
+```
+
+![plot of chunk histoNArem](figure/histoNArem-1.png) 
+
+Based on our results, the median and mean yield similar results when missing values are replaced through imputation or when removing missing values when computing . 
+
 
 ## Are there differences in activity patterns between weekdays and weekends?
 
@@ -759,16 +832,16 @@ sessionInfo()
 ## [5] survival_2.38-3 lattice_0.20-33 dplyr_0.4.2    
 ## 
 ## loaded via a namespace (and not attached):
-##  [1] RColorBrewer_1.1-2  digest_0.6.8        htmltools_0.2.6    
-##  [4] R6_2.1.0            splines_3.2.1       scales_0.2.5       
-##  [7] assertthat_0.1      stringr_1.0.0       munsell_0.4.2      
-## [10] proto_0.3-10        nnet_7.3-10         acepack_1.3-3.3    
-## [13] DBI_0.3.1           labeling_0.3        MASS_7.3-43        
-## [16] plyr_1.8.3          stringi_0.5-5       magrittr_1.5       
-## [19] reshape2_1.4.1      evaluate_0.7.2      rmarkdown_0.7      
-## [22] gtable_0.1.2        colorspace_1.2-6    foreign_0.8-65     
-## [25] yaml_2.1.13         tools_3.2.1         parallel_3.2.1     
-## [28] cluster_2.0.3       gridExtra_2.0.0     lazyeval_0.1.10    
-## [31] formatR_1.2         rpart_4.1-10        Rcpp_0.12.0        
-## [34] latticeExtra_0.6-26
+##  [1] RColorBrewer_1.1-2  markdown_0.7.7      digest_0.6.8       
+##  [4] htmltools_0.2.6     R6_2.1.0            splines_3.2.1      
+##  [7] scales_0.2.5        assertthat_0.1      stringr_1.0.0      
+## [10] munsell_0.4.2       proto_0.3-10        nnet_7.3-10        
+## [13] mime_0.3            acepack_1.3-3.3     DBI_0.3.1          
+## [16] labeling_0.3        MASS_7.3-43         plyr_1.8.3         
+## [19] stringi_0.5-5       magrittr_1.5        reshape2_1.4.1     
+## [22] rmarkdown_0.7       evaluate_0.7.2      gtable_0.1.2       
+## [25] colorspace_1.2-6    foreign_0.8-65      yaml_2.1.13        
+## [28] tools_3.2.1         parallel_3.2.1      cluster_2.0.3      
+## [31] gridExtra_2.0.0     lazyeval_0.1.10     formatR_1.2        
+## [34] rpart_4.1-10        Rcpp_0.12.0         latticeExtra_0.6-26
 ```

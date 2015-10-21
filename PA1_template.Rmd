@@ -37,7 +37,7 @@ The variables included in this dataset are:
     interval: Identifier for the 5-minute interval in which measurement was taken
 
 The dataset is stored in a comma-separated-value (CSV) file and there are a total of 17,568 observations in this dataset.
-```{r loading_data}
+```{r, loading_data}
 if(!file.exists('activity.csv')){   
   unzip('activity.zip')
 }   
@@ -239,7 +239,7 @@ However, our esteemed professor, Dr. Roger D Peng in his lecture video [Evidence
 
 ### An alternative way to impute using multiple mean values.
 
-Taking into account the distribution of NAS. From the above, we know that the NAs are equally ditributed over the different time intervals.
+Taking into account the distribution of NAS. From the above, we know that the NAs are equally distributed over the different time intervals.
 
 Since the missing values are equally distributed in the time intervals, taking the mean number of steps grouped by intervals will provide a closer approximation of the value instead of using a single value to replace all missing values.
 
@@ -278,7 +278,7 @@ We can now see the result of our imputation with multiple mean values.  Let's ma
 
 ```{r, histoimp, fig.width=12, fig.height=5}
 par(mfrow=c(1,3))
-hist(multiimpactsum_byyday$sum_steps, col = "green", breaks = 8, xlab = "Total number of steps/day", main = "Frequency \nof total number of steps/day", sub = "Days with missing values replaced with multiple means", col.main = "navy", col.lab = "navy", col.sub = "red", cex = 1,5)
+hist(multiimpactsum_byyday$sum_steps, col = "green", breaks = 8, xlab = "Total number of steps/day", main = "Frequency \nof total number of steps/day", sub = "Days with missing values replaced with multiple means", col.main = "navy", col.lab = "navy", col.sub = "red", cex = 1.5)
 rug(multiimpactsum_byyday$sum_steps)
 abline(v = mean(multiimpactsum_byyday$sum_steps, na.rm = TRUE), col = "blue", lwd = 2, lty = 3)
 abline(v = median(multiimpactsum_byyday$sum_steps, na.rm = TRUE), col = "magenta", lwd = 2, lty = 2)
@@ -292,7 +292,7 @@ abline(v = median(sum_byyday$sum_steps, na.rm = TRUE), col = "magenta", lwd = 2,
 text(c(15,15), pos = 4, "Mean=9354.23", cex = 1, col = "blue")
 text(c(14,14), pos = 4, "Median=10395", cex = 1, col = "magenta")
 
-hist(impactsum_byyday$sum_steps, col = "green", breaks = 8, xlab = "Total number of steps/day", main = "Frequency \nof total number of steps/day", sub = "Days with missing values replaced by single mean", col.main = "navy", col.lab = "navy", col.sub = "red", cex = 1,5)
+hist(impactsum_byyday$sum_steps, col = "green", breaks = 8, xlab = "Total number of steps/day", main = "Frequency \nof total number of steps/day", sub = "Days with missing values replaced by single mean", col.main = "navy", col.lab = "navy", col.sub = "red", cex = 1.5)
 rug(impactsum_byyday$sum_steps)
 abline(v = mean(impactsum_byyday$sum_steps, na.rm = TRUE), col = "blue", lwd = 2, lty = 3)
 abline(v = median(impactsum_byyday$sum_steps, na.rm = TRUE), col = "magenta", lwd = 2, lty = 2)
@@ -300,7 +300,55 @@ text(c(15,15), pos = 4, "Mean=10751.74", cex = 1, col = "blue")
 text(c(14,14), pos = 4, "Median=10,656", cex = 1, col = "magenta")
 ```
 
-Imputation by single mean value or multiple mean values resulted in the median approximating the mean value and values approximating the mean increased in frequency as expected. 
+Imputation by a single mean value (plot on the right) or multiple mean values (plot on the left) resulted in the median approximating the mean, since the values we imputed were based on mean values. It might not be very obvious, but all three plota underwent the process of imputation.  The middle plot had its NAs replaced as a by-product of using the function summarise (dplyr package) in conjunction with the function sum with its argument na.rm = TRUE, to obtain the total number of steps per day. The missing values were assigned the value of zero on days where all observations were missing. 
+
+### Comparing  histograms of the same data that underwent different strategies of imputation and the same data where missing values were removed.
+
+There are 8 days where the total number of steps is 0.  The number of steps is not actually zero, but rather, data during these days are missing.  During the computation for the total number of steps, the missing values were conveniently represented by 0
+
+```{r, NAsum_byyday}
+sum_byydayNA <- sum_byyday[sum_byyday$sum_steps == 0, ]
+print(sum_byydayNA)
+sum_byydaynoNA <- sum_byyday[sum_byyday$sum_steps != 0, ]
+head(sum_byydaynoNA)
+```
+
+Removing these days in the computation of the mean and median yields a similar mean and median where the missing values are replaced by single or multiple mean values.
+
+```{r, histoNArem, fig.width=7, fig.height=7}
+par(mfrow=c(2,2))
+hist(multiimpactsum_byyday$sum_steps, col = "green", breaks = 8, xlab = "Total number of steps/day", main = "Frequency \nof total number of steps/day", sub = "Days with missing values replaced by multiple means", col.main = "navy", col.lab = "navy", col.sub = "red", cex = 2.5)
+rug(multiimpactsum_byyday$sum_steps)
+abline(v = mean(multiimpactsum_byyday$sum_steps, na.rm = TRUE), col = "blue", lwd = 2, lty = 3)
+abline(v = median(multiimpactsum_byyday$sum_steps, na.rm = TRUE), col = "magenta", lwd = 2, lty = 2)
+text(c(20,20), pos = 4, "Mean=10766.19", cex = 0.8, col = "blue")
+text(c(19,19), pos = 4, "Median=10,766.19", cex = 0.8, col = "magenta")
+
+hist(sum_byydaynoNA$sum_steps, col = "green", breaks = 8, xlab = "Total number of steps/day", main = "Frequency \nof total number of steps/day", sub = "Original data with missing values Removed", col.main = "navy", col.lab = "navy", col.sub = "red", cex = 2.5)
+rug(sum_byydaynoNA$sum_steps)
+abline(v = mean(sum_byydaynoNA$sum_steps, na.rm = TRUE), col = "blue", lwd = 2, lty = 3)
+abline(v = median(sum_byydaynoNA$sum_steps, na.rm = TRUE), col = "magenta", lwd = 2, lty = 2) 
+text(c(15,15), pos = 4, "Mean=10,766.19", cex = 0.8, col = "blue")
+text(c(14,14), pos = 4, "Median=10,765", cex = 0.8, col = "magenta")
+
+hist(impactsum_byyday$sum_steps, col = "green", breaks = 8, xlab = "Total number of steps/day", main = "Frequency \nof total number of steps/day", sub = "Days with missing values replaced by single mean", col.main = "navy", col.lab = "navy", col.sub = "red", cex = 2.5)
+rug(impactsum_byyday$sum_steps)
+abline(v = mean(impactsum_byyday$sum_steps, na.rm = TRUE), col = "blue", lwd = 2, lty = 3)
+abline(v = median(impactsum_byyday$sum_steps, na.rm = TRUE), col = "magenta", lwd = 2, lty = 2)
+text(c(20,20), pos = 4, "Mean=10,751.74", cex = 0.8, col = "blue")
+text(c(19,19), pos = 4, "Median=10,656", cex = 0.8, col = "magenta")
+
+hist(sum_byyday$sum_steps, col = "green", breaks = 8, xlab = "Total number of steps/day", main = "Frequency \nof total number of steps/day", sub = "Original data with missing values replace by zero", col.main = "navy", col.lab = "navy", col.sub = "red", cex = 1.5)
+rug(sum_byyday$sum_steps)
+abline(v = mean(sum_byyday$sum_steps, na.rm = TRUE), col = "blue", lwd = 2, lty = 3)
+abline(v = median(sum_byyday$sum_steps, na.rm = TRUE), col = "magenta", lwd = 2, lty = 2) 
+text(c(15,15), pos = 4, "Mean=9354.23", cex = 0.8, col = "blue")
+text(c(14,14), pos = 4, "Median=10395", cex = 0.8, col = "magenta")
+
+```
+
+Based on our results, the median and mean yielded similar results when missing values were replaced through imputation with multiple or single mean values and when the missing values were removed. Unknowingly substituting missing values with zero leads to an error in extracting mean and median values.
+
 
 ## Are there differences in activity patterns between weekdays and weekends?
 
