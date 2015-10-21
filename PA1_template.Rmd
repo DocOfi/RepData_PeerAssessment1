@@ -315,7 +315,7 @@ head(sum_byydaynoNA)
 
 Removing these days in the computation of the mean and median yields a similar mean and median where the missing values are replaced by single or multiple mean values.
 
-```{r, histoNArem, fig.width=7, fig.height=7}
+```{r, impute_remove, fig.width=7, fig.height=7}
 par(mfrow=c(2,2))
 hist(multiimpactsum_byyday$sum_steps, col = "green", breaks = 8, xlab = "Total number of steps/day", main = "Frequency \nof total number of steps/day", sub = "Days with missing values replaced by multiple means", col.main = "navy", col.lab = "navy", col.sub = "red", cex = 2.5)
 rug(multiimpactsum_byyday$sum_steps)

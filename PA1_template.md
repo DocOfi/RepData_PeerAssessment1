@@ -553,7 +553,7 @@ However, our esteemed professor, Dr. Roger D Peng in his lecture video [Evidence
 
 ### An alternative way to impute using multiple mean values.
 
-Taking into account the distribution of NAS. From the above, we know that the NAs are equally ditributed over the different time intervals.
+Taking into account the distribution of NAS. From the above, we know that the NAs are equally distributed over the different time intervals.
 
 Since the missing values are equally distributed in the time intervals, taking the mean number of steps grouped by intervals will provide a closer approximation of the value instead of using a single value to replace all missing values.
 
@@ -681,9 +681,9 @@ text(c(14,14), pos = 4, "Median=10,656", cex = 1, col = "magenta")
 
 ![plot of chunk histoimp](figure/histoimp-1.png) 
 
-Imputation by single mean value or multiple mean values resulted in the median approximating the mean value and values approximating the mean increased in frequency as expected. 
+Imputation by a single mean value (plot on the right) or multiple mean values (plot on the left) resulted in the median approximating the mean, since the values we imputed were based on mean values. It might not be very obvious, but all three plota underwent the process of imputation.  The middle plot had its NAs replaced as a by-product of using the function summarise (dplyr package) in conjunction with the function sum with its argument na.rm = TRUE, to obtain the total number of steps per day. The missing values were assigned the value of zero on days where all observations were missing. 
 
-### Comparing the mean and median in the same data, with one where missing values are removed, and the other where missing values are replaced with mean values.
+### Comparing  histograms of the same data that underwent different strategies of imputation and the same data where missing values were removed.
 
 There are 8 days where the total number of steps is 0.  The number of steps is not actually zero, but rather, data during these days are missing.  During the computation for the total number of steps, the missing values were conveniently represented by 0
 
@@ -728,32 +728,39 @@ Removing these days in the computation of the mean and median yields a similar m
 
 
 ```r
-par(mfrow=c(1,3))
-hist(multiimpactsum_byyday$sum_steps, col = "green", breaks = 8, xlab = "Total number of steps/day", main = "Frequency \nof total number of steps/day", sub = "Days with missing values replaced with multiple means", col.main = "navy", col.lab = "navy", col.sub = "red", cex = 2.5)
+par(mfrow=c(2,2))
+hist(multiimpactsum_byyday$sum_steps, col = "green", breaks = 8, xlab = "Total number of steps/day", main = "Frequency \nof total number of steps/day", sub = "Days with missing values replaced by multiple means", col.main = "navy", col.lab = "navy", col.sub = "red", cex = 2.5)
 rug(multiimpactsum_byyday$sum_steps)
 abline(v = mean(multiimpactsum_byyday$sum_steps, na.rm = TRUE), col = "blue", lwd = 2, lty = 3)
 abline(v = median(multiimpactsum_byyday$sum_steps, na.rm = TRUE), col = "magenta", lwd = 2, lty = 2)
-text(c(15,15), pos = 4, "Mean=10766.19", cex = 1, col = "blue")
-text(c(14,14), pos = 4, "Median=10,766.19", cex = 1, col = "magenta")
+text(c(20,20), pos = 4, "Mean=10766.19", cex = 0.8, col = "blue")
+text(c(19,19), pos = 4, "Median=10,766.19", cex = 0.8, col = "magenta")
 
 hist(sum_byydaynoNA$sum_steps, col = "green", breaks = 8, xlab = "Total number of steps/day", main = "Frequency \nof total number of steps/day", sub = "Original data with missing values Removed", col.main = "navy", col.lab = "navy", col.sub = "red", cex = 2.5)
 rug(sum_byydaynoNA$sum_steps)
 abline(v = mean(sum_byydaynoNA$sum_steps, na.rm = TRUE), col = "blue", lwd = 2, lty = 3)
 abline(v = median(sum_byydaynoNA$sum_steps, na.rm = TRUE), col = "magenta", lwd = 2, lty = 2) 
-text(c(15,15), pos = 4, "Mean=10,766.19", cex = 1, col = "blue")
-text(c(14,14), pos = 4, "Median=10,765", cex = 1, col = "magenta")
+text(c(15,15), pos = 4, "Mean=10,766.19", cex = 0.8, col = "blue")
+text(c(14,14), pos = 4, "Median=10,765", cex = 0.8, col = "magenta")
 
 hist(impactsum_byyday$sum_steps, col = "green", breaks = 8, xlab = "Total number of steps/day", main = "Frequency \nof total number of steps/day", sub = "Days with missing values replaced by single mean", col.main = "navy", col.lab = "navy", col.sub = "red", cex = 2.5)
 rug(impactsum_byyday$sum_steps)
 abline(v = mean(impactsum_byyday$sum_steps, na.rm = TRUE), col = "blue", lwd = 2, lty = 3)
 abline(v = median(impactsum_byyday$sum_steps, na.rm = TRUE), col = "magenta", lwd = 2, lty = 2)
-text(c(15,15), pos = 4, "Mean=10,751.74", cex = 1, col = "blue")
-text(c(14,14), pos = 4, "Median=10,656", cex = 1, col = "magenta")
+text(c(20,20), pos = 4, "Mean=10,751.74", cex = 0.8, col = "blue")
+text(c(19,19), pos = 4, "Median=10,656", cex = 0.8, col = "magenta")
+
+hist(sum_byyday$sum_steps, col = "green", breaks = 8, xlab = "Total number of steps/day", main = "Frequency \nof total number of steps/day", sub = "Original data with missing values replace by zero", col.main = "navy", col.lab = "navy", col.sub = "red", cex = 1.5)
+rug(sum_byyday$sum_steps)
+abline(v = mean(sum_byyday$sum_steps, na.rm = TRUE), col = "blue", lwd = 2, lty = 3)
+abline(v = median(sum_byyday$sum_steps, na.rm = TRUE), col = "magenta", lwd = 2, lty = 2) 
+text(c(15,15), pos = 4, "Mean=9354.23", cex = 0.8, col = "blue")
+text(c(14,14), pos = 4, "Median=10395", cex = 0.8, col = "magenta")
 ```
 
-![plot of chunk histoNArem](figure/histoNArem-1.png) 
+![plot of chunk impute_remove](figure/impute_remove-1.png) 
 
-Based on our results, the median and mean yield similar results when missing values are replaced through imputation or when removing missing values when computing . 
+Based on our results, the median and mean yielded similar results when missing values were replaced through imputation with multiple or single mean values and when the missing values were removed. Unknowingly substituting missing values with zero leads to an error in extracting mean and median values.
 
 
 ## Are there differences in activity patterns between weekdays and weekends?
@@ -832,16 +839,16 @@ sessionInfo()
 ## [5] survival_2.38-3 lattice_0.20-33 dplyr_0.4.2    
 ## 
 ## loaded via a namespace (and not attached):
-##  [1] RColorBrewer_1.1-2  markdown_0.7.7      digest_0.6.8       
-##  [4] htmltools_0.2.6     R6_2.1.0            splines_3.2.1      
-##  [7] scales_0.2.5        assertthat_0.1      stringr_1.0.0      
-## [10] munsell_0.4.2       proto_0.3-10        nnet_7.3-10        
-## [13] mime_0.3            acepack_1.3-3.3     DBI_0.3.1          
-## [16] labeling_0.3        MASS_7.3-43         plyr_1.8.3         
-## [19] stringi_0.5-5       magrittr_1.5        reshape2_1.4.1     
-## [22] rmarkdown_0.7       evaluate_0.7.2      gtable_0.1.2       
-## [25] colorspace_1.2-6    foreign_0.8-65      yaml_2.1.13        
-## [28] tools_3.2.1         parallel_3.2.1      cluster_2.0.3      
-## [31] gridExtra_2.0.0     lazyeval_0.1.10     formatR_1.2        
-## [34] rpart_4.1-10        Rcpp_0.12.0         latticeExtra_0.6-26
+##  [1] RColorBrewer_1.1-2  digest_0.6.8        htmltools_0.2.6    
+##  [4] R6_2.1.0            splines_3.2.1       scales_0.2.5       
+##  [7] assertthat_0.1      stringr_1.0.0       munsell_0.4.2      
+## [10] proto_0.3-10        nnet_7.3-10         acepack_1.3-3.3    
+## [13] DBI_0.3.1           labeling_0.3        MASS_7.3-43        
+## [16] plyr_1.8.3          stringi_0.5-5       magrittr_1.5       
+## [19] reshape2_1.4.1      rmarkdown_0.7       evaluate_0.7.2     
+## [22] gtable_0.1.2        colorspace_1.2-6    foreign_0.8-65     
+## [25] yaml_2.1.13         tools_3.2.1         parallel_3.2.1     
+## [28] cluster_2.0.3       gridExtra_2.0.0     lazyeval_0.1.10    
+## [31] formatR_1.2         rpart_4.1-10        Rcpp_0.12.0        
+## [34] latticeExtra_0.6-26
 ```
