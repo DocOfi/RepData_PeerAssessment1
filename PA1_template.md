@@ -1,6 +1,12 @@
-# Reproducible Research Peer Assessment 1
-DocOfi  
-October 16, 2015  
+---
+title: "Reproducible Research Peer Assessment 1"
+author: "DocOfi"
+date: "October 16, 2015"
+output:
+  html_document:
+    keep_md: yes
+    toc: yes
+---
 
 
 
@@ -40,7 +46,7 @@ print(dateDownloaded)
 ```
 
 ```
-## [1] "Wed Nov 04 19:49:22 2015"
+## [1] "Wed Nov 04 20:05:53 2015"
 ```
 
 ```r
@@ -173,7 +179,7 @@ text(c(15,15), pos = 4, "Mean=9,354.23", cex = 1, col = "blue")
 text(c(14,14), pos = 4, "Median=10,395", cex = 1, col = "magenta")
 ```
 
-![](PA1_template_files/figure-html/hist-1.png) 
+![plot of chunk hist](figure/hist-1.png) 
 
 ## What is the average daily activity pattern?
 
@@ -241,7 +247,7 @@ text(c(180), pos = 4, offset = 11.1, "Max Steps=206.1698", cex = 1, col = "magen
 text(c(150), pos = 4, offset = 11.1, "Time Interval=8:35 am", cex = 1, col = "blue") 
 ```
 
-![](PA1_template_files/figure-html/time_act-1.png) 
+![plot of chunk time_act](figure/time_act-1.png) 
 
 ## Imputing missing values
 
@@ -543,7 +549,7 @@ text(c(15,15), pos = 4, "Mean=10,751.74", cex = 1, col = "blue")
 text(c(14,14), pos = 4, "Median=10,656", cex = 1, col = "magenta")
 ```
 
-![](PA1_template_files/figure-html/histimp-1.png) 
+![plot of chunk histimp](figure/histimp-1.png) 
 
 Do these values differ from the estimates from the first part of the assignment? What is the impact of imputing missing data on the estimates of the total daily number of steps? Let's compare it with the original data.
 
@@ -683,7 +689,7 @@ text(c(15,15), pos = 4, "Mean=10751.74", cex = 1, col = "blue")
 text(c(14,14), pos = 4, "Median=10,656", cex = 1, col = "magenta")
 ```
 
-![](PA1_template_files/figure-html/histoimp-1.png) 
+![plot of chunk histoimp](figure/histoimp-1.png) 
 
 Imputation by a single mean value (plot on the right) or multiple mean values (plot on the left) resulted in the median approximating the mean, since the values we imputed were based on mean values. It might not be very obvious, but all three plota underwent the process of imputation.  The middle plot had its NAs replaced as a by-product of using the function summarise (dplyr package) in conjunction with the function sum and its argument na.rm = TRUE, to obtain the total number of steps per day. The missing values were assigned the value of *zero* on days where all observations were missing. 
 
@@ -762,7 +768,7 @@ text(c(15,15), pos = 4, "Mean=9354.23", cex = 0.8, col = "blue")
 text(c(14,14), pos = 4, "Median=10395", cex = 0.8, col = "magenta")
 ```
 
-![](PA1_template_files/figure-html/impute_remove-1.png) 
+![plot of chunk impute_remove](figure/impute_remove-1.png) 
 
 Based on our results, the median and mean yielded similar results when missing values were replaced through imputation with multiple or single mean values and when the missing values were removed. Unknowingly substituting missing values with zero leads to an error in extracting mean and median values.
 
@@ -801,7 +807,7 @@ g <- ggplot(sumimp_byintwkt, aes(x = interval/100, y = mean_steps, color = weekt
 print(g)
 ```
 
-![](PA1_template_files/figure-html/timeser2-1.png) 
+![plot of chunk timeser2](figure/timeser2-1.png) 
 
 1. The black horizontal lines represent the difference between the mean maximum number of steps during weekdays and weekends.  
 
@@ -840,19 +846,20 @@ sessionInfo()
 ## 
 ## other attached packages:
 ## [1] Hmisc_3.16-0    ggplot2_1.0.1   Formula_1.2-1   survival_2.38-3
-## [5] lattice_0.20-33 dplyr_0.4.2    
+## [5] lattice_0.20-33 dplyr_0.4.2     knitr_1.11     
 ## 
 ## loaded via a namespace (and not attached):
-##  [1] RColorBrewer_1.1-2  digest_0.6.8        htmltools_0.2.6    
-##  [4] R6_2.1.0            splines_3.2.1       scales_0.2.5       
-##  [7] assertthat_0.1      stringr_1.0.0       knitr_1.11         
-## [10] munsell_0.4.2       proto_0.3-10        nnet_7.3-10        
-## [13] acepack_1.3-3.3     DBI_0.3.1           labeling_0.3       
-## [16] MASS_7.3-43         plyr_1.8.3          stringi_0.5-5      
-## [19] magrittr_1.5        reshape2_1.4.1      rmarkdown_0.7      
-## [22] evaluate_0.7.2      gtable_0.1.2        colorspace_1.2-6   
-## [25] foreign_0.8-65      yaml_2.1.13         tools_3.2.1        
-## [28] parallel_3.2.1      cluster_2.0.3       gridExtra_2.0.0    
-## [31] lazyeval_0.1.10     formatR_1.2         rpart_4.1-10       
-## [34] Rcpp_0.12.0         latticeExtra_0.6-26
+##  [1] RColorBrewer_1.1-2  markdown_0.7.7      digest_0.6.8       
+##  [4] htmltools_0.2.6     R6_2.1.0            splines_3.2.1      
+##  [7] scales_0.2.5        assertthat_0.1      stringr_1.0.0      
+## [10] munsell_0.4.2       proto_0.3-10        highr_0.5          
+## [13] nnet_7.3-10         mime_0.3            acepack_1.3-3.3    
+## [16] DBI_0.3.1           labeling_0.3        MASS_7.3-43        
+## [19] rsconnect_0.3.79    plyr_1.8.3          stringi_0.5-5      
+## [22] magrittr_1.5        reshape2_1.4.1      rmarkdown_0.7      
+## [25] evaluate_0.7.2      gtable_0.1.2        colorspace_1.2-6   
+## [28] foreign_0.8-65      yaml_2.1.13         tools_3.2.1        
+## [31] parallel_3.2.1      cluster_2.0.3       gridExtra_2.0.0    
+## [34] lazyeval_0.1.10     formatR_1.2         rpart_4.1-10       
+## [37] Rcpp_0.12.0         latticeExtra_0.6-26
 ```
