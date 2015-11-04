@@ -1,11 +1,6 @@
----
-title: "Reproducible Research Peer Assessment 1"
-author: "DocOfi"
-date: "October 16, 2015"
-output:
-  html_document:
-    toc: yes
----
+# Reproducible Research Peer Assessment 1
+DocOfi  
+October 16, 2015  
 
 
 
@@ -19,7 +14,7 @@ This assignment is submitted for the fulfillment of the requirements in Coursera
 
 
 ```r
-setwd("C:/Users/Ed/Desktop/UCI HAR Dataset")
+setwd("C:/Users/Ed/datasciencecoursera/RepData_PeerAssessment1")
 ```
 
 ## Loading the data
@@ -38,9 +33,18 @@ The variables included in this dataset are:
 The dataset is stored in a comma-separated-value (CSV) file and there are a total of 17,568 observations in this dataset.
 
 ```r
-if(!file.exists('activity.csv')){   
-  unzip('activity.zip')
-}   
+fileurl <- "http://d396qusza40orc.cloudfront.net/repdata%2Fdata%2Factivity.zip"
+download.file(fileurl, destfile = "./activity.zip")
+dateDownloaded <- date()
+print(dateDownloaded)
+```
+
+```
+## [1] "Wed Nov 04 19:49:22 2015"
+```
+
+```r
+unzip('activity.zip')
 act <- read.csv("activity.csv", header = TRUE, stringsAsFactors = FALSE)
 str(act)
 ```
@@ -85,7 +89,7 @@ Examination of the summary of the data showed that observations were recorded on
 
 ## Preprocessing the data
 
-We transformed the data from the variable column date and added column variables to represent the months (months), days of the week(weekday, represented by numbers e.g. 1 is Sunday, 2 is Monday...), and days of the year (yday) when the data was recorded.  Observation were recorder from the 274^th^ to the 334^th^ day of the year 2012 or from October 1, 2012 to November 30, 2012.  
+We transformed the data from the variable column date and added column variables to represent the months (months), days of the week, and days of the year (yday) when the data was recorded.  Observation were recorded from the 274^th^ to the 334^th^ day of the year 2012 or from October 1, 2012 to November 30, 2012.  
 
 
 ```r
@@ -133,7 +137,7 @@ head(sum_byyday)
 ```
 
 To obtain the mean, we summed the total number of steps taken each day for each of the days of the observation period (570608) and divided it by the total number of days of the the observation period (61).
-**NOTE** The days with 0 values in the sum_byyday data frame do not indicate 0 steps taken during these days but rather there was no observation recorded for these days or data was missing. We include these days in the analysis for now.
+**NOTE** The days with 0 values in the sum_byyday data frame do not indicate 0 steps taken during these days but rather there was no observation recorded for these days or data was missing. We shall see later that several days in our data contain missing values or observations for the whole day and we shall also see how the value of 0 was assigned to these days.  We include these days in the analysis for now.
 
 
 ```r
@@ -164,12 +168,12 @@ We present the results by creating a histogram to show the frequency distributio
 hist(sum_byyday$sum_steps, col = "green", breaks = 8, xlab = "Total number of steps/day", main = "Frequency \nof total number of steps/day", col.main = "navy", col.lab = "navy", cex = 1.5)
 rug(sum_byyday$sum_steps)
 abline(v = mean(sum_byyday$sum_steps, na.rm = TRUE), col = "blue", lwd = 2, lty = 3)
-abline(v = median(sum_byyday$sum_steps, na.rm = TRUE), col = "magenta", lwd = 2, lty = 2) 
-text(c(15,15), pos = 4, "Mean=9354.23", cex = 1, col = "blue")
-text(c(14,14), pos = 4, "Median=10395", cex = 1, col = "magenta")
+abline(v = median(sum_byyday$sum_steps, na.rm = TRUE), col = "magenta", lwd = 2, lty = 2)
+text(c(15,15), pos = 4, "Mean=9,354.23", cex = 1, col = "blue")
+text(c(14,14), pos = 4, "Median=10,395", cex = 1, col = "magenta")
 ```
 
-![plot of chunk hist](figure/hist-1.png) 
+![](PA1_template_files/figure-html/hist-1.png) 
 
 ## What is the average daily activity pattern?
 
@@ -237,7 +241,7 @@ text(c(180), pos = 4, offset = 11.1, "Max Steps=206.1698", cex = 1, col = "magen
 text(c(150), pos = 4, offset = 11.1, "Time Interval=8:35 am", cex = 1, col = "blue") 
 ```
 
-![plot of chunk time_act](figure/time_act-1.png) 
+![](PA1_template_files/figure-html/time_act-1.png) 
 
 ## Imputing missing values
 
@@ -302,7 +306,7 @@ mean(!is.na(act$steps))
 ## [1] 0.8688525
 ```
 
-We can see that the number of missing values or NAs  compared to the total number of values in the the whole data (2.19%) is few.  However, if we look at the percentage of NAs in the steps variable column, we find that the number of NAs compared to the total number of observations in this column is high (13.11%). The high percentage of missing data in this variable column can significantly affect the analysis of the data involving this variable.  We can further investigate the distribution of these missing values.
+We can see that the number of missing values or NAs  compared to the total number of values in the the whole data (2.19%) is few.  However, if we look at the percentage of NAs in the steps variable column, we find that the number of NAs compared to the total number of observations in this column is high (13.11%). The high percentage of missing data in this variable column (In fact all missing values are located in this Varible column) can significantly affect the analysis of the data involving this variable.  We can further investigate the distribution of these missing values.
 
 
 ```r
@@ -539,7 +543,7 @@ text(c(15,15), pos = 4, "Mean=10,751.74", cex = 1, col = "blue")
 text(c(14,14), pos = 4, "Median=10,656", cex = 1, col = "magenta")
 ```
 
-![plot of chunk histimp](figure/histimp-1.png) 
+![](PA1_template_files/figure-html/histimp-1.png) 
 
 Do these values differ from the estimates from the first part of the assignment? What is the impact of imputing missing data on the estimates of the total daily number of steps? Let's compare it with the original data.
 
@@ -664,7 +668,7 @@ abline(v = median(multiimpactsum_byyday$sum_steps, na.rm = TRUE), col = "magenta
 text(c(15,15), pos = 4, "Mean=10766.19", cex = 1, col = "blue")
 text(c(14,14), pos = 4, "Median=10,766.19", cex = 1, col = "magenta")
 
-hist(sum_byyday$sum_steps, col = "green", breaks = 8, xlab = "Total number of steps/day", main = "Frequency \nof total number of steps/day", sub = "Original data with missing values", col.main = "navy", col.lab = "navy", col.sub = "red", cex = 1.5)
+hist(sum_byyday$sum_steps, col = "green", breaks = 8, xlab = "Total number of steps/day", main = "Frequency \nof total number of steps/day", sub = "Original data with missing values replaced by zero", col.main = "navy", col.lab = "navy", col.sub = "red", cex = 1.5)
 rug(sum_byyday$sum_steps)
 abline(v = mean(sum_byyday$sum_steps, na.rm = TRUE), col = "blue", lwd = 2, lty = 3)
 abline(v = median(sum_byyday$sum_steps, na.rm = TRUE), col = "magenta", lwd = 2, lty = 2) 
@@ -679,9 +683,9 @@ text(c(15,15), pos = 4, "Mean=10751.74", cex = 1, col = "blue")
 text(c(14,14), pos = 4, "Median=10,656", cex = 1, col = "magenta")
 ```
 
-![plot of chunk histoimp](figure/histoimp-1.png) 
+![](PA1_template_files/figure-html/histoimp-1.png) 
 
-Imputation by a single mean value (plot on the right) or multiple mean values (plot on the left) resulted in the median approximating the mean, since the values we imputed were based on mean values. It might not be very obvious, but all three plota underwent the process of imputation.  The middle plot had its NAs replaced as a by-product of using the function summarise (dplyr package) in conjunction with the function sum with its argument na.rm = TRUE, to obtain the total number of steps per day. The missing values were assigned the value of zero on days where all observations were missing. 
+Imputation by a single mean value (plot on the right) or multiple mean values (plot on the left) resulted in the median approximating the mean, since the values we imputed were based on mean values. It might not be very obvious, but all three plota underwent the process of imputation.  The middle plot had its NAs replaced as a by-product of using the function summarise (dplyr package) in conjunction with the function sum and its argument na.rm = TRUE, to obtain the total number of steps per day. The missing values were assigned the value of *zero* on days where all observations were missing. 
 
 ### Comparing  histograms of the same data that underwent different strategies of imputation and the same data where missing values were removed.
 
@@ -750,7 +754,7 @@ abline(v = median(impactsum_byyday$sum_steps, na.rm = TRUE), col = "magenta", lw
 text(c(20,20), pos = 4, "Mean=10,751.74", cex = 0.8, col = "blue")
 text(c(19,19), pos = 4, "Median=10,656", cex = 0.8, col = "magenta")
 
-hist(sum_byyday$sum_steps, col = "green", breaks = 8, xlab = "Total number of steps/day", main = "Frequency \nof total number of steps/day", sub = "Original data with missing values replace by zero", col.main = "navy", col.lab = "navy", col.sub = "red", cex = 1.5)
+hist(sum_byyday$sum_steps, col = "green", breaks = 8, xlab = "Total number of steps/day", main = "Frequency \nof total number of steps/day", sub = "Original data with missing values replaced by zero", col.main = "navy", col.lab = "navy", col.sub = "red", cex = 1.5)
 rug(sum_byyday$sum_steps)
 abline(v = mean(sum_byyday$sum_steps, na.rm = TRUE), col = "blue", lwd = 2, lty = 3)
 abline(v = median(sum_byyday$sum_steps, na.rm = TRUE), col = "magenta", lwd = 2, lty = 2) 
@@ -758,7 +762,7 @@ text(c(15,15), pos = 4, "Mean=9354.23", cex = 0.8, col = "blue")
 text(c(14,14), pos = 4, "Median=10395", cex = 0.8, col = "magenta")
 ```
 
-![plot of chunk impute_remove](figure/impute_remove-1.png) 
+![](PA1_template_files/figure-html/impute_remove-1.png) 
 
 Based on our results, the median and mean yielded similar results when missing values were replaced through imputation with multiple or single mean values and when the missing values were removed. Unknowingly substituting missing values with zero leads to an error in extracting mean and median values.
 
@@ -797,11 +801,11 @@ g <- ggplot(sumimp_byintwkt, aes(x = interval/100, y = mean_steps, color = weekt
 print(g)
 ```
 
-![plot of chunk timeser2](figure/timeser2-1.png) 
+![](PA1_template_files/figure-html/timeser2-1.png) 
 
-1. The black lines represent the difference between the mean maximum number of steps during weekdays and weekends.  
+1. The black horizontal lines represent the difference between the mean maximum number of steps during weekdays and weekends.  
 
-2. The blue and pink lines represent the respective means of the mean number of steps during weekends and weekdays. It is surprising to know that the mean of the weekends (42.32) is greater than the mean during weekdays(35.56).
+2. The blue and pink horizontal lines represent the respective means of the mean number of steps during weekends and weekdays. It is surprising to know that the mean of the weekends (42.32) is greater than the mean during weekdays(35.56).
 
 2. We can see from the above that activity or the number of steps  increases abruptly and earlier during weekdays, plateaus, and then abruptly increase again, reaching peak levels between 8 and 9 am. 
 
@@ -821,7 +825,7 @@ sessionInfo()
 ```
 ## R version 3.2.1 (2015-06-18)
 ## Platform: i386-w64-mingw32/i386 (32-bit)
-## Running under: Windows 7 (build 7601) Service Pack 1
+## Running under: Windows 8 (build 9200)
 ## 
 ## locale:
 ## [1] LC_COLLATE=English_United States.1252 
@@ -835,20 +839,20 @@ sessionInfo()
 ## [8] base     
 ## 
 ## other attached packages:
-## [1] knitr_1.11      Hmisc_3.16-0    ggplot2_1.0.1   Formula_1.2-1  
-## [5] survival_2.38-3 lattice_0.20-33 dplyr_0.4.2    
+## [1] Hmisc_3.16-0    ggplot2_1.0.1   Formula_1.2-1   survival_2.38-3
+## [5] lattice_0.20-33 dplyr_0.4.2    
 ## 
 ## loaded via a namespace (and not attached):
 ##  [1] RColorBrewer_1.1-2  digest_0.6.8        htmltools_0.2.6    
 ##  [4] R6_2.1.0            splines_3.2.1       scales_0.2.5       
-##  [7] assertthat_0.1      stringr_1.0.0       munsell_0.4.2      
-## [10] proto_0.3-10        nnet_7.3-10         acepack_1.3-3.3    
-## [13] DBI_0.3.1           labeling_0.3        MASS_7.3-43        
-## [16] plyr_1.8.3          stringi_0.5-5       magrittr_1.5       
-## [19] reshape2_1.4.1      rmarkdown_0.7       evaluate_0.7.2     
-## [22] gtable_0.1.2        colorspace_1.2-6    foreign_0.8-65     
-## [25] yaml_2.1.13         tools_3.2.1         parallel_3.2.1     
-## [28] cluster_2.0.3       gridExtra_2.0.0     lazyeval_0.1.10    
-## [31] formatR_1.2         rpart_4.1-10        Rcpp_0.12.0        
-## [34] latticeExtra_0.6-26
+##  [7] assertthat_0.1      stringr_1.0.0       knitr_1.11         
+## [10] munsell_0.4.2       proto_0.3-10        nnet_7.3-10        
+## [13] acepack_1.3-3.3     DBI_0.3.1           labeling_0.3       
+## [16] MASS_7.3-43         plyr_1.8.3          stringi_0.5-5      
+## [19] magrittr_1.5        reshape2_1.4.1      rmarkdown_0.7      
+## [22] evaluate_0.7.2      gtable_0.1.2        colorspace_1.2-6   
+## [25] foreign_0.8-65      yaml_2.1.13         tools_3.2.1        
+## [28] parallel_3.2.1      cluster_2.0.3       gridExtra_2.0.0    
+## [31] lazyeval_0.1.10     formatR_1.2         rpart_4.1-10       
+## [34] Rcpp_0.12.0         latticeExtra_0.6-26
 ```

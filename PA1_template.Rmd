@@ -4,6 +4,7 @@ author: "DocOfi"
 date: "October 16, 2015"
 output:
   html_document:
+    keep_md: yes
     toc: yes
 ---
 
@@ -20,7 +21,7 @@ This particular assignment, the first in this course, familiarizes the student w
 This assignment is submitted for the fulfillment of the requirements in Coursera's Reproducibe Research Peer Assessment 1. 
 
 ```{r setwd}
-setwd("C:/Users/Ed/Desktop/UCI HAR Dataset")
+setwd("C:/Users/Ed/datasciencecoursera/RepData_PeerAssessment1")
 ```
 
 ## Loading the data
@@ -38,9 +39,11 @@ The variables included in this dataset are:
 
 The dataset is stored in a comma-separated-value (CSV) file and there are a total of 17,568 observations in this dataset.
 ```{r, loading_data}
-if(!file.exists('activity.csv')){   
-  unzip('activity.zip')
-}   
+fileurl <- "http://d396qusza40orc.cloudfront.net/repdata%2Fdata%2Factivity.zip"
+download.file(fileurl, destfile = "./activity.zip")
+dateDownloaded <- date()
+print(dateDownloaded)
+unzip('activity.zip')
 act <- read.csv("activity.csv", header = TRUE, stringsAsFactors = FALSE)
 str(act)
 summary(act)
@@ -51,7 +54,7 @@ Examination of the summary of the data showed that observations were recorded on
 
 ## Preprocessing the data
 
-We transformed the data from the variable column date and added column variables to represent the months (months), days of the week(weekday, represented by numbers e.g. 1 is Sunday, 2 is Monday...), and days of the year (yday) when the data was recorded.  Observation were recorder from the 274^th^ to the 334^th^ day of the year 2012 or from October 1, 2012 to November 30, 2012.  
+We transformed the data from the variable column date and added column variables to represent the months (months), days of the week, and days of the year (yday) when the data was recorded.  Observation were recorded from the 274^th^ to the 334^th^ day of the year 2012 or from October 1, 2012 to November 30, 2012.  
 
 ```{r, add_column}
 act$date <- as.Date(act$date)
@@ -75,7 +78,7 @@ head(sum_byyday)
 ```
 
 To obtain the mean, we summed the total number of steps taken each day for each of the days of the observation period (`r sum(sum_byyday$sum_steps, na.rm = TRUE)`) and divided it by the total number of days of the the observation period (`r length(sum_byyday$sum_steps)`).
-**NOTE** The days with 0 values in the sum_byyday data frame do not indicate 0 steps taken during these days but rather there was no observation recorded for these days or data was missing. We include these days in the analysis for now.
+**NOTE** The days with 0 values in the sum_byyday data frame do not indicate 0 steps taken during these days but rather there was no observation recorded for these days or data was missing. We shall see later that several days in our data contain missing values or observations for the whole day and we shall also see how the value of 0 was assigned to these days.  We include these days in the analysis for now.
 
 ```{r, mean_step}
 mean_steps_per_day <- mean(sum_byyday$sum_steps, na.rm = TRUE)
@@ -95,9 +98,9 @@ We present the results by creating a histogram to show the frequency distributio
 hist(sum_byyday$sum_steps, col = "green", breaks = 8, xlab = "Total number of steps/day", main = "Frequency \nof total number of steps/day", col.main = "navy", col.lab = "navy", cex = 1.5)
 rug(sum_byyday$sum_steps)
 abline(v = mean(sum_byyday$sum_steps, na.rm = TRUE), col = "blue", lwd = 2, lty = 3)
-abline(v = median(sum_byyday$sum_steps, na.rm = TRUE), col = "magenta", lwd = 2, lty = 2) 
-text(c(15,15), pos = 4, "Mean=9354.23", cex = 1, col = "blue")
-text(c(14,14), pos = 4, "Median=10395", cex = 1, col = "magenta")
+abline(v = median(sum_byyday$sum_steps, na.rm = TRUE), col = "magenta", lwd = 2, lty = 2)
+text(c(15,15), pos = 4, "Mean=9,354.23", cex = 1, col = "blue")
+text(c(14,14), pos = 4, "Median=10,395", cex = 1, col = "magenta")
 ```
 
 ## What is the average daily activity pattern?
@@ -150,7 +153,7 @@ mean(is.na(act$steps))
 mean(!is.na(act$steps))
 ```
 
-We can see that the number of missing values or NAs  compared to the total number of values in the the whole data (`r round(mean(is.na(act))* 100, 2)`%) is few.  However, if we look at the percentage of NAs in the steps variable column, we find that the number of NAs compared to the total number of observations in this column is high (`r round(mean(is.na(act$steps))* 100, 2)`%). The high percentage of missing data in this variable column can significantly affect the analysis of the data involving this variable.  We can further investigate the distribution of these missing values.
+We can see that the number of missing values or NAs  compared to the total number of values in the the whole data (`r round(mean(is.na(act))* 100, 2)`%) is few.  However, if we look at the percentage of NAs in the steps variable column, we find that the number of NAs compared to the total number of observations in this column is high (`r round(mean(is.na(act$steps))* 100, 2)`%). The high percentage of missing data in this variable column (In fact all missing values are located in this Varible column) can significantly affect the analysis of the data involving this variable.  We can further investigate the distribution of these missing values.
 
 ```{r, time}
 missing_values <- is.na(act$steps)
@@ -285,7 +288,7 @@ abline(v = median(multiimpactsum_byyday$sum_steps, na.rm = TRUE), col = "magenta
 text(c(15,15), pos = 4, "Mean=10766.19", cex = 1, col = "blue")
 text(c(14,14), pos = 4, "Median=10,766.19", cex = 1, col = "magenta")
 
-hist(sum_byyday$sum_steps, col = "green", breaks = 8, xlab = "Total number of steps/day", main = "Frequency \nof total number of steps/day", sub = "Original data with missing values", col.main = "navy", col.lab = "navy", col.sub = "red", cex = 1.5)
+hist(sum_byyday$sum_steps, col = "green", breaks = 8, xlab = "Total number of steps/day", main = "Frequency \nof total number of steps/day", sub = "Original data with missing values replaced by zero", col.main = "navy", col.lab = "navy", col.sub = "red", cex = 1.5)
 rug(sum_byyday$sum_steps)
 abline(v = mean(sum_byyday$sum_steps, na.rm = TRUE), col = "blue", lwd = 2, lty = 3)
 abline(v = median(sum_byyday$sum_steps, na.rm = TRUE), col = "magenta", lwd = 2, lty = 2) 
@@ -300,7 +303,7 @@ text(c(15,15), pos = 4, "Mean=10751.74", cex = 1, col = "blue")
 text(c(14,14), pos = 4, "Median=10,656", cex = 1, col = "magenta")
 ```
 
-Imputation by a single mean value (plot on the right) or multiple mean values (plot on the left) resulted in the median approximating the mean, since the values we imputed were based on mean values. It might not be very obvious, but all three plota underwent the process of imputation.  The middle plot had its NAs replaced as a by-product of using the function summarise (dplyr package) in conjunction with the function sum with its argument na.rm = TRUE, to obtain the total number of steps per day. The missing values were assigned the value of zero on days where all observations were missing. 
+Imputation by a single mean value (plot on the right) or multiple mean values (plot on the left) resulted in the median approximating the mean, since the values we imputed were based on mean values. It might not be very obvious, but all three plota underwent the process of imputation.  The middle plot had its NAs replaced as a by-product of using the function summarise (dplyr package) in conjunction with the function sum and its argument na.rm = TRUE, to obtain the total number of steps per day. The missing values were assigned the value of *zero* on days where all observations were missing. 
 
 ### Comparing  histograms of the same data that underwent different strategies of imputation and the same data where missing values were removed.
 
@@ -315,7 +318,7 @@ head(sum_byydaynoNA)
 
 Removing these days in the computation of the mean and median yields a similar mean and median where the missing values are replaced by single or multiple mean values.
 
-```{r, impute_remove, fig.width=7, fig.height=7}
+```{r, impute_remove, fig.width=8, fig.height=8}
 par(mfrow=c(2,2))
 hist(multiimpactsum_byyday$sum_steps, col = "green", breaks = 8, xlab = "Total number of steps/day", main = "Frequency \nof total number of steps/day", sub = "Days with missing values replaced by multiple means", col.main = "navy", col.lab = "navy", col.sub = "red", cex = 2.5)
 rug(multiimpactsum_byyday$sum_steps)
@@ -338,7 +341,7 @@ abline(v = median(impactsum_byyday$sum_steps, na.rm = TRUE), col = "magenta", lw
 text(c(20,20), pos = 4, "Mean=10,751.74", cex = 0.8, col = "blue")
 text(c(19,19), pos = 4, "Median=10,656", cex = 0.8, col = "magenta")
 
-hist(sum_byyday$sum_steps, col = "green", breaks = 8, xlab = "Total number of steps/day", main = "Frequency \nof total number of steps/day", sub = "Original data with missing values replace by zero", col.main = "navy", col.lab = "navy", col.sub = "red", cex = 1.5)
+hist(sum_byyday$sum_steps, col = "green", breaks = 8, xlab = "Total number of steps/day", main = "Frequency \nof total number of steps/day", sub = "Original data with missing values replaced by zero", col.main = "navy", col.lab = "navy", col.sub = "red", cex = 1.5)
 rug(sum_byyday$sum_steps)
 abline(v = mean(sum_byyday$sum_steps, na.rm = TRUE), col = "blue", lwd = 2, lty = 3)
 abline(v = median(sum_byyday$sum_steps, na.rm = TRUE), col = "magenta", lwd = 2, lty = 2) 
@@ -369,9 +372,9 @@ g <- ggplot(sumimp_byintwkt, aes(x = interval/100, y = mean_steps, color = weekt
 print(g)
 ```
 
-1. The black lines represent the difference between the mean maximum number of steps during weekdays and weekends.  
+1. The black horizontal lines represent the difference between the mean maximum number of steps during weekdays and weekends.  
 
-2. The blue and pink lines represent the respective means of the mean number of steps during weekends and weekdays. It is surprising to know that the mean of the weekends (`r round(mean(subset(sumimp_byintwkt, sumimp_byintwkt$weektype == "weekend")$mean_steps), 2)`) is greater than the mean during weekdays(`r round(mean(subset(sumimp_byintwkt, sumimp_byintwkt$weektype == "weekday")$mean_steps), 2)`).
+2. The blue and pink horizontal lines represent the respective means of the mean number of steps during weekends and weekdays. It is surprising to know that the mean of the weekends (`r round(mean(subset(sumimp_byintwkt, sumimp_byintwkt$weektype == "weekend")$mean_steps), 2)`) is greater than the mean during weekdays(`r round(mean(subset(sumimp_byintwkt, sumimp_byintwkt$weektype == "weekday")$mean_steps), 2)`).
 
 2. We can see from the above that activity or the number of steps  increases abruptly and earlier during weekdays, plateaus, and then abruptly increase again, reaching peak levels between 8 and 9 am. 
 
